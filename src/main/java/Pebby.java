@@ -41,6 +41,12 @@ public class Pebby {
         return output + "  " + task.toString();
     }
 
+    public static String unmarkTask(int taskNo) {
+        Task task = tasks[taskNo];
+        task.markAsNotDone();
+        String output = "OK, I've marked this task as not done yet: \n";
+        return output + "  " + task.toString();
+    }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -58,6 +64,10 @@ public class Pebby {
                 case String s when s.startsWith("mark"):
                     int index = Integer.parseInt(s.substring(5)) - 1;
                     System.out.println(markTask(index));
+                    break;
+                case String s when s.startsWith("unmark"):
+                    index = Integer.parseInt(s.substring(7)) - 1;
+                    System.out.println(unmarkTask(index));
                     break;
                 default:
                     System.out.print(addTask(command));
