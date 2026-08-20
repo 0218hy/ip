@@ -125,7 +125,7 @@ public class Pebby {
                     break;
                 }
                 default:
-                    System.out.print(addTask(command));
+                    System.out.println("Hmmm... What does this mean? My pebble brain cant understand.");
             }
             System.out.println("____________________________________________________________");
             command = scanner.nextLine();
