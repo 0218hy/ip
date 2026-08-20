@@ -151,9 +151,8 @@ public class Pebby {
     }
 
     public static String deleteTask(int index) {
-        int taskNo = index - 1;
-        String output = "Noted. I've removed this task: " + '\n' + tasks.get(taskNo).toString();
-        tasks.remove(taskNo);
+        String output = "Noted. I've removed this task: " + '\n' + tasks.get(index).toString();
+        tasks.remove(index);
         return output + '\n' + taskInList();
     }
 
