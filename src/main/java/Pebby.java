@@ -27,6 +27,7 @@ public class Pebby {
 
     public static String listTask() {
         StringBuilder taskList = new StringBuilder();
+        taskList.append("Here are the tasks in your list:").append('\n');
         for (int i = 0; i < taskCount; i++) {
             int taskNo = i + 1;
             taskList.append(taskNo).append(". ").append(tasks[i].toString()).append('\n');
@@ -46,6 +47,34 @@ public class Pebby {
         task.markAsNotDone();
         String output = "OK, I've marked this task as not done yet: \n";
         return output + "  " + task.toString();
+    }
+
+    public static String addTodo(String description) {
+        Todo todo = new Todo(description);
+        tasks[taskCount] = todo;
+        taskCount++;
+        String output = "Got it. I've added this task: \n";
+        return output + "  " + todo.toString();
+    }
+
+    public static String addDeadline(String description, String by) {
+        Deadline deadline = new Deadline(description, by);
+        tasks[taskCount] = deadline;
+        taskCount++;
+        String output = "Got it. I've added this task: \n";
+        return output + "  " + deadline.toString();
+    }
+
+    public static String addEvent(String description, String from, String to) {
+        Event event = new Event(description, from, to);
+        tasks[taskCount] = event;
+        taskCount++;
+        String output = "Got it. I've added this task: \n";
+        return output + "  " + event.toString();
+    }
+
+    public static String taskInList() {
+        return "Now you have " + taskCount + " tasks in the list.";
     }
 
     public static void main(String[] args) {
@@ -69,6 +98,30 @@ public class Pebby {
                 case String s when s.startsWith("unmark"): {
                     int index = Integer.parseInt(s.substring(7)) - 1;
                     System.out.println(unmarkTask(index));
+                    break;
+                }
+                case String s when s.startsWith("todo"): {
+                    String description = s.substring(5);
+                    System.out.println(addTodo(description));
+                    System.out.println(taskInList());
+                    break;
+                }
+                case String s when s.startsWith("deadline"): {
+                    int byIndex = s.indexOf("/by");
+                    String description = s.substring(9, byIndex);
+                    String by = s.substring(byIndex + 4);
+                    System.out.println(addDeadline(description, by));
+                    System.out.println(taskInList());
+                    break;
+                }
+                case String s when s.startsWith("event"): {
+                    int fromIndex = s.indexOf("/from");
+                    int toIndex = s.indexOf("/to");
+                    String description = s.substring(6, fromIndex);
+                    String from = s.substring(fromIndex + 6, toIndex);
+                    String to = s.substring(toIndex + 4);
+                    System.out.println(addEvent(description, from, to));
+                    System.out.println(taskInList());
                     break;
                 }
                 default:
