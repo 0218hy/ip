@@ -61,14 +61,16 @@ public class Pebby {
                 case "list":
                     System.out.print(listTask());
                     break;
-                case String s when s.startsWith("mark"):
+                case String s when s.startsWith("mark"): {
                     int index = Integer.parseInt(s.substring(5)) - 1;
                     System.out.println(markTask(index));
                     break;
-                case String s when s.startsWith("unmark"):
-                    index = Integer.parseInt(s.substring(7)) - 1;
+                }
+                case String s when s.startsWith("unmark"): {
+                    int index = Integer.parseInt(s.substring(7)) - 1;
                     System.out.println(unmarkTask(index));
                     break;
+                }
                 default:
                     System.out.print(addTask(command));
             }
