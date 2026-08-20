@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Pebby {
-    public static String[] tasks = new String[100];
+    public static Task[] tasks = new Task[100];
     public static int taskCount = 0;
 
     public static void greetUser() {
@@ -18,20 +18,29 @@ public class Pebby {
         System.out.println("____________________________________________________________");
     }
 
-    public static String addTask(String task) {
-        tasks[taskCount] = task;
+    public static String addTask(String description) {
+        Task newTask = new Task(description);
+        tasks[taskCount] = newTask;
         taskCount++;
-        return "added: " + task;
+        return "added: " + newTask.description + '\n';
     }
 
     public static String listTask() {
         StringBuilder taskList = new StringBuilder();
         for (int i = 0; i < taskCount; i++) {
             int taskNo = i + 1;
-            taskList.append(taskNo).append(". ").append(tasks[i]).append('\n');
+            taskList.append(taskNo).append(". ").append(tasks[i].toString()).append('\n');
         }
         return taskList.toString();
     }
+
+    public static String markTask(int taskNo) {
+        Task task = tasks[taskNo];
+        task.markAsDone();
+        String output = "Nice! I've marked this task as done: \n";
+        return output + "  " + task.toString();
+    }
+
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -42,10 +51,16 @@ public class Pebby {
         String command = scanner.nextLine();
         while (!command.equals("bye")) {
             System.out.println("____________________________________________________________");
-            if (command.equals("list")) {
-                System.out.println(listTask());
-            } else {
-                System.out.print(addTask(command));
+            switch(command) {
+                case "list":
+                    System.out.print(listTask());
+                    break;
+                case String s when s.startsWith("mark"):
+                    int index = Integer.parseInt(s.substring(5)) - 1;
+                    System.out.println(markTask(index));
+                    break;
+                default:
+                    System.out.print(addTask(command));
             }
             System.out.println("____________________________________________________________");
             command = scanner.nextLine();
