@@ -77,6 +77,78 @@ public class Pebby {
         return "Now you have " + taskCount + " tasks in the list.";
     }
 
+    public static String handleTodo(String command) {
+        try {
+            String description = command.substring("todo".length()).trim();
+            if (description.isBlank()) {
+                throw new IllegalArgumentException("Please provide a description.");
+            }
+            return addTodo(description) + '\n' + taskInList();
+        } catch (IllegalArgumentException e) {
+            return "Invalid todo: " + e.getMessage();
+        }
+    }
+
+    public static String handleDeadline(String command) {
+        try {
+            String input = command.substring("deadline".length()).trim();
+            if (input.isBlank()) {
+                throw new IllegalArgumentException("Please provide a description and deadline.");
+            }
+
+            int byIndex = input.indexOf("/by");
+            if (byIndex == -1) {
+                throw new IllegalArgumentException("Please include /by followed by a deadline.");
+            }
+
+            String description = input.substring(0, byIndex).trim();
+            String by = input.substring(byIndex + "/by".length()).trim();
+            if (description.isBlank()) {
+                throw new IllegalArgumentException("Please provide a description.");
+            }
+            if (by.isBlank()) {
+                throw new IllegalArgumentException("Please provide a deadline after /by.");
+            }
+            return addDeadline(description, by) + '\n' + taskInList();
+        } catch (IllegalArgumentException e) {
+            return "Invalid deadline: " + e.getMessage();
+        }
+    }
+
+    public static String handleEvent(String command) {
+        try {
+            String input = command.substring("event".length()).trim();
+            if (input.isBlank()) {
+                throw new IllegalArgumentException("Please provide a description, start time, and end time.");
+            }
+
+            int fromIndex = input.indexOf("/from");
+            int toIndex = input.indexOf("/to");
+            if (fromIndex == -1) {
+                throw new IllegalArgumentException("Please include /from followed by a start time.");
+            }
+            if (toIndex == -1) {
+                throw new IllegalArgumentException("Please include /to followed by an end time.");
+            }
+
+            String description = input.substring(0, fromIndex).trim();
+            String from = input.substring(fromIndex + "/from".length(), toIndex).trim();
+            String to = input.substring(toIndex + "/to".length()).trim();
+            if (description.isBlank()) {
+                throw new IllegalArgumentException("Please provide a description.");
+            }
+            if (from.isBlank()) {
+                throw new IllegalArgumentException("Please provide a start time after /from.");
+            }
+            if (to.isBlank()) {
+                throw new IllegalArgumentException("Please provide an end time after /to.");
+            }
+            return addEvent(description, from, to) + '\n' + taskInList();
+        } catch (IllegalArgumentException e) {
+            return "Invalid event: " + e.getMessage();
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -101,27 +173,15 @@ public class Pebby {
                     break;
                 }
                 case String s when s.startsWith("todo"): {
-                    String description = s.substring(5);
-                    System.out.println(addTodo(description));
-                    System.out.println(taskInList());
+                    System.out.println(handleTodo(s));
                     break;
                 }
                 case String s when s.startsWith("deadline"): {
-                    int byIndex = s.indexOf("/by");
-                    String description = s.substring(9, byIndex);
-                    String by = s.substring(byIndex + 4);
-                    System.out.println(addDeadline(description, by));
-                    System.out.println(taskInList());
+                    System.out.println(handleDeadline(s));
                     break;
                 }
                 case String s when s.startsWith("event"): {
-                    int fromIndex = s.indexOf("/from");
-                    int toIndex = s.indexOf("/to");
-                    String description = s.substring(6, fromIndex);
-                    String from = s.substring(fromIndex + 6, toIndex);
-                    String to = s.substring(toIndex + 4);
-                    System.out.println(addEvent(description, from, to));
-                    System.out.println(taskInList());
+                    System.out.println(handleEvent(s));
                     break;
                 }
                 default:
