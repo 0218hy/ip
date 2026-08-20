@@ -114,8 +114,63 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task: 
-  [E] [ ] project meeting(from: Monday to: Tuesday)
+  [E] [ ] project meeting (from: Monday to: Tuesday)
 Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Bye Bye!
+____________________________________________________________
+```
+
+## Test Case: Delete a task
+
+### Aim
+Verify that deleting a task by its 1-based list position removes the correct task and updates the task count.
+
+### Command
+```sh
+java -cp out/production/ip Pebby
+```
+
+### Input
+```text
+todo first task
+todo second task
+delete 1
+list
+bye
+```
+
+### Expected Output
+```text
+____________________________________________________________
+ ____       _     _          
+|  _ \  ___| |__ | |__  _   _
+| |_) |/ _ \ '_ \| '_ \| | | |
+|  __/|  __/ |_) | |_) | |_| |
+|_|    \___|_.__/|_.__/ \__, |
+                         |___/
+Hello! I'm Pebby.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task: 
+  [T] [ ] first task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task: 
+  [T] [ ] second task
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Noted. I've removed this task: 
+[T] [ ] first task
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Here are the tasks in your list:
+1. [T] [ ] second task
 ____________________________________________________________
 ____________________________________________________________
 Bye Bye!

@@ -80,7 +80,7 @@ public class Pebby {
 
     public static String handleTodo(String command) {
         try {
-            String description = command.substring("todo".length()).trim();
+            String description = CommandType.TODO.argumentFrom(command);
             if (description.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description.");
             }
@@ -92,7 +92,7 @@ public class Pebby {
 
     public static String handleDeadline(String command) {
         try {
-            String input = command.substring("deadline".length()).trim();
+            String input = CommandType.DEADLINE.argumentFrom(command);
             if (input.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description and deadline.");
             }
@@ -118,7 +118,7 @@ public class Pebby {
 
     public static String handleEvent(String command) {
         try {
-            String input = command.substring("event".length()).trim();
+            String input = CommandType.EVENT.argumentFrom(command);
             if (input.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description, start time, and end time.");
             }
@@ -163,39 +163,45 @@ public class Pebby {
 
         // Getting user input
         String command = scanner.nextLine();
-        while (!command.equals("bye")) {
+        while (true) {
+            CommandType commandType = CommandType.from(command);
+            if (commandType == CommandType.BYE) {
+                break;
+            }
+
             System.out.println("____________________________________________________________");
-            switch(command) {
-                case "list":
+            switch (commandType) {
+                case LIST:
                     System.out.print(listTask());
                     break;
-                case String s when s.startsWith("mark"): {
-                    int index = Integer.parseInt(s.substring("mark ".length())) - 1;
+                case MARK: {
+                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
                     System.out.println(markTask(index));
                     break;
                 }
-                case String s when s.startsWith("unmark"): {
-                    int index = Integer.parseInt(s.substring("unmark ".length())) - 1;
+                case UNMARK: {
+                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
                     System.out.println(unmarkTask(index));
                     break;
                 }
-                case String s when s.startsWith("todo"): {
-                    System.out.println(handleTodo(s));
+                case TODO: {
+                    System.out.println(handleTodo(command));
                     break;
                 }
-                case String s when s.startsWith("deadline"): {
-                    System.out.println(handleDeadline(s));
+                case DEADLINE: {
+                    System.out.println(handleDeadline(command));
                     break;
                 }
-                case String s when s.startsWith("event"): {
-                    System.out.println(handleEvent(s));
+                case EVENT: {
+                    System.out.println(handleEvent(command));
                     break;
                 }
-                case String s when s.startsWith("delete"): {
-                    int index = Integer.parseInt(s.substring("delete ".length())) - 1;
+                case DELETE: {
+                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
                     System.out.println(deleteTask(index));
                     break;
                 }
+                case BYE:
                 default:
                     System.out.println("Hmmm... What does this mean? My pebble brain cant understand.");
             }
