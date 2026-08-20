@@ -150,6 +150,13 @@ public class Pebby {
         }
     }
 
+    public static String deleteTask(int index) {
+        int taskNo = index - 1;
+        String output = "Noted. I've removed this task: " + '\n' + tasks.get(taskNo).toString();
+        tasks.remove(taskNo);
+        return output + '\n' + taskInList();
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -164,12 +171,12 @@ public class Pebby {
                     System.out.print(listTask());
                     break;
                 case String s when s.startsWith("mark"): {
-                    int index = Integer.parseInt(s.substring(5)) - 1;
+                    int index = Integer.parseInt(s.substring("mark ".length())) - 1;
                     System.out.println(markTask(index));
                     break;
                 }
                 case String s when s.startsWith("unmark"): {
-                    int index = Integer.parseInt(s.substring(7)) - 1;
+                    int index = Integer.parseInt(s.substring("unmark ".length())) - 1;
                     System.out.println(unmarkTask(index));
                     break;
                 }
@@ -183,6 +190,11 @@ public class Pebby {
                 }
                 case String s when s.startsWith("event"): {
                     System.out.println(handleEvent(s));
+                    break;
+                }
+                case String s when s.startsWith("delete"): {
+                    int index = Integer.parseInt(s.substring("delete ".length())) - 1;
+                    System.out.println(deleteTask(index));
                     break;
                 }
                 default:
