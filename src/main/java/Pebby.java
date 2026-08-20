@@ -1,8 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Pebby {
-    public static Task[] tasks = new Task[100];
-    public static int taskCount = 0;
+//  public static Task[] tasks = new Task[100];
+//  public static int taskCount = 0;
+    public static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void greetUser() {
         String banner = " ____       _     _          \n"
@@ -18,32 +21,33 @@ public class Pebby {
         System.out.println("____________________________________________________________");
     }
 
-    public static String addTask(String description) {
-        Task newTask = new Task(description);
-        tasks[taskCount] = newTask;
-        taskCount++;
-        return "added: " + newTask.description + '\n';
-    }
+//    No longer usse pure Task
+//    public static String addTask(String description) {
+//        Task newTask = new Task(description);
+//        tasks.add(newTask);
+//        taskCount++;
+//        return "added: " + newTask.description + '\n';
+//    }
 
     public static String listTask() {
         StringBuilder taskList = new StringBuilder();
         taskList.append("Here are the tasks in your list:").append('\n');
-        for (int i = 0; i < taskCount; i++) {
+        for (int i = 0; i < tasks.size(); i++) {
             int taskNo = i + 1;
-            taskList.append(taskNo).append(". ").append(tasks[i].toString()).append('\n');
+            taskList.append(taskNo).append(". ").append(tasks.get(i).toString()).append('\n');
         }
         return taskList.toString();
     }
 
     public static String markTask(int taskNo) {
-        Task task = tasks[taskNo];
+        Task task = tasks.get(taskNo);
         task.markAsDone();
         String output = "Nice! I've marked this task as done: \n";
         return output + "  " + task.toString();
     }
 
     public static String unmarkTask(int taskNo) {
-        Task task = tasks[taskNo];
+        Task task = tasks.get(taskNo);
         task.markAsNotDone();
         String output = "OK, I've marked this task as not done yet: \n";
         return output + "  " + task.toString();
@@ -51,30 +55,27 @@ public class Pebby {
 
     public static String addTodo(String description) {
         Todo todo = new Todo(description);
-        tasks[taskCount] = todo;
-        taskCount++;
+        tasks.add(todo);
         String output = "Got it. I've added this task: \n";
         return output + "  " + todo.toString();
     }
 
     public static String addDeadline(String description, String by) {
         Deadline deadline = new Deadline(description, by);
-        tasks[taskCount] = deadline;
-        taskCount++;
+        tasks.add(deadline);
         String output = "Got it. I've added this task: \n";
         return output + "  " + deadline.toString();
     }
 
     public static String addEvent(String description, String from, String to) {
         Event event = new Event(description, from, to);
-        tasks[taskCount] = event;
-        taskCount++;
+        tasks.add(event);
         String output = "Got it. I've added this task: \n";
         return output + "  " + event.toString();
     }
 
     public static String taskInList() {
-        return "Now you have " + taskCount + " tasks in the list.";
+        return "Now you have " + tasks.size() + " tasks in the list.";
     }
 
     public static String handleTodo(String command) {
