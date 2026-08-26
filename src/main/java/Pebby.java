@@ -1,11 +1,13 @@
 import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.Scanner;
 
+/** A command-line task chatbot that keeps tasks in a local data file. */
 public class Pebby {
 //  public static Task[] tasks = new Task[100];
 //  public static int taskCount = 0;
     public static ArrayList<Task> tasks = new ArrayList<>();
+    private static final Storage storage = new Storage();
 
     public static void greetUser() {
         String banner = " ____       _     _          \n"
@@ -43,35 +45,35 @@ public class Pebby {
         Task task = tasks.get(taskNo);
         task.markAsDone();
         String output = "Nice! I've marked this task as done: \n";
-        return output + "  " + task.toString();
+        return output + "  " + task.toString() + saveTasks();
     }
 
     public static String unmarkTask(int taskNo) {
         Task task = tasks.get(taskNo);
         task.markAsNotDone();
         String output = "OK, I've marked this task as not done yet: \n";
-        return output + "  " + task.toString();
+        return output + "  " + task.toString() + saveTasks();
     }
 
     public static String addTodo(String description) {
         Todo todo = new Todo(description);
         tasks.add(todo);
         String output = "Got it. I've added this task: \n";
-        return output + "  " + todo.toString();
+        return output + "  " + todo.toString() + saveTasks();
     }
 
     public static String addDeadline(String description, String by) {
         Deadline deadline = new Deadline(description, by);
         tasks.add(deadline);
         String output = "Got it. I've added this task: \n";
-        return output + "  " + deadline.toString();
+        return output + "  " + deadline.toString() + saveTasks();
     }
 
     public static String addEvent(String description, String from, String to) {
         Event event = new Event(description, from, to);
         tasks.add(event);
         String output = "Got it. I've added this task: \n";
-        return output + "  " + event.toString();
+        return output + "  " + event.toString() + saveTasks();
     }
 
     public static String taskInList() {
@@ -131,6 +133,9 @@ public class Pebby {
             if (toIndex == -1) {
                 throw new IllegalArgumentException("Please include /to followed by an end time.");
             }
+            if (toIndex < fromIndex) {
+                throw new IllegalArgumentException("Please put /from before /to.");
+            }
 
             String description = input.substring(0, fromIndex).trim();
             String from = input.substring(fromIndex + "/from".length(), toIndex).trim();
@@ -153,17 +158,60 @@ public class Pebby {
     public static String deleteTask(int index) {
         String output = "Noted. I've removed this task: " + '\n' + tasks.get(index).toString();
         tasks.remove(index);
-        return output + '\n' + taskInList();
+        return output + '\n' + taskInList() + saveTasks();
+    }
+
+    /** Saves the current list and turns an I/O failure into a helpful UI message. */
+    private static String saveTasks() {
+        try {
+            storage.save(tasks);
+            return "";
+        } catch (IOException | IllegalArgumentException exception) {
+            return "\nWarning: your task was changed, but Pebby could not save it: "
+                    + exception.getMessage();
+        }
+    }
+
+    /** Loads prior tasks without allowing a missing or damaged file to stop Pebby. */
+    private static String loadTasks() {
+        try {
+            Storage.LoadResult result = storage.load();
+            tasks = new ArrayList<>(result.tasks);
+            if (result.skippedRecords > 0) {
+                return "Warning: ignored " + result.skippedRecords
+                        + " invalid saved task record(s).";
+            }
+            return "";
+        } catch (IOException exception) {
+            return "Warning: Pebby could not load saved tasks: " + exception.getMessage();
+        }
+    }
+
+    /** Validates the 1-based task number used by mark, unmark, and delete commands. */
+    private static int taskIndexFrom(String argument) {
+        try {
+            int taskNumber = Integer.parseInt(argument);
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
+                throw new IllegalArgumentException("Please choose a task number from 1 to " + tasks.size() + ".");
+            }
+            return taskNumber - 1;
+        } catch (NumberFormatException exception) {
+            throw new IllegalArgumentException("Please provide a whole task number.");
+        }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        String loadMessage = loadTasks();
         greetUser();
+        if (!loadMessage.isEmpty()) {
+            System.out.println(loadMessage);
+            System.out.println("____________________________________________________________");
+        }
 
         // Getting user input
-        String command = scanner.nextLine();
-        while (true) {
+        while (scanner.hasNextLine()) {
+            String command = scanner.nextLine();
             CommandType commandType = CommandType.from(command);
             if (commandType == CommandType.BYE) {
                 break;
@@ -175,13 +223,19 @@ public class Pebby {
                     System.out.print(listTask());
                     break;
                 case MARK: {
-                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
-                    System.out.println(markTask(index));
+                    try {
+                        System.out.println(markTask(taskIndexFrom(commandType.argumentFrom(command))));
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Invalid mark: " + exception.getMessage());
+                    }
                     break;
                 }
                 case UNMARK: {
-                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
-                    System.out.println(unmarkTask(index));
+                    try {
+                        System.out.println(unmarkTask(taskIndexFrom(commandType.argumentFrom(command))));
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Invalid unmark: " + exception.getMessage());
+                    }
                     break;
                 }
                 case TODO: {
@@ -197,8 +251,11 @@ public class Pebby {
                     break;
                 }
                 case DELETE: {
-                    int index = Integer.parseInt(commandType.argumentFrom(command)) - 1;
-                    System.out.println(deleteTask(index));
+                    try {
+                        System.out.println(deleteTask(taskIndexFrom(commandType.argumentFrom(command))));
+                    } catch (IllegalArgumentException exception) {
+                        System.out.println("Invalid delete: " + exception.getMessage());
+                    }
                     break;
                 }
                 case BYE:
@@ -206,7 +263,6 @@ public class Pebby {
                     System.out.println("Hmmm... What does this mean? My pebble brain cant understand.");
             }
             System.out.println("____________________________________________________________");
-            command = scanner.nextLine();
         }
         System.out.println("____________________________________________________________");
         System.out.println("Bye Bye!");
