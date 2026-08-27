@@ -1,12 +1,9 @@
-import java.util.ArrayList;
 import java.io.IOException;
 import java.time.LocalDate;
 
 /** A command-line task chatbot that keeps tasks in a local data file. */
 public class Pebby {
-//  public static Task[] tasks = new Task[100];
-//  public static int taskCount = 0;
-    public static ArrayList<Task> tasks = new ArrayList<>();
+    private static TaskList tasks = new TaskList();
     private static final Storage storage = new Storage();
 
 //    No longer usse pure Task
@@ -18,36 +15,31 @@ public class Pebby {
 //    }
 
     public static String markTask(int taskNo) {
-        Task task = tasks.get(taskNo);
-        task.markAsDone();
+        Task task = tasks.markAsDone(taskNo);
         String output = "Nice! I've marked this task as done: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
     public static String unmarkTask(int taskNo) {
-        Task task = tasks.get(taskNo);
-        task.markAsNotDone();
+        Task task = tasks.markAsNotDone(taskNo);
         String output = "OK, I've marked this task as not done yet: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
     public static String addTodo(String description) {
-        Todo todo = new Todo(description);
-        tasks.add(todo);
+        Todo todo = tasks.addTodo(description);
         String output = "Got it. I've added this task: \n";
         return output + "  " + todo.toString() + saveTasks();
     }
 
     public static String addDeadline(String description, String by) {
-        Deadline deadline = new Deadline(description, by);
-        tasks.add(deadline);
+        Deadline deadline = tasks.addDeadline(description, by);
         String output = "Got it. I've added this task: \n";
         return output + "  " + deadline.toString() + saveTasks();
     }
 
     public static String addEvent(String description, String from, String to) {
-        Event event = new Event(description, from, to);
-        tasks.add(event);
+        Event event = tasks.addEvent(description, from, to);
         String output = "Got it. I've added this task: \n";
         return output + "  " + event.toString() + saveTasks();
     }
@@ -157,15 +149,15 @@ public class Pebby {
     }
 
     public static String deleteTask(int index) {
-        String output = "Noted. I've removed this task: " + '\n' + tasks.get(index).toString();
-        tasks.remove(index);
+        Task deletedTask = tasks.delete(index);
+        String output = "Noted. I've removed this task: " + '\n' + deletedTask.toString();
         return output + '\n' + taskInList() + saveTasks();
     }
 
     /** Saves the current list and turns an I/O failure into a helpful UI message. */
     private static String saveTasks() {
         try {
-            storage.save(tasks);
+            storage.save(tasks.asList());
             return "";
         } catch (IOException | IllegalArgumentException exception) {
             return "\nWarning: your task was changed, but Pebby could not save it: "
@@ -177,7 +169,7 @@ public class Pebby {
     private static String loadTasks() {
         try {
             Storage.LoadResult result = storage.load();
-            tasks = new ArrayList<>(result.tasks);
+            tasks = new TaskList(result.tasks);
             if (result.skippedRecords > 0) {
                 return "Warning: ignored " + result.skippedRecords
                         + " invalid saved task record(s).";

@@ -1,10 +1,8 @@
-import java.util.List;
-
 /** Displays every task currently held by Pebby. */
 public class ListCommand extends Command {
     /** Formats and displays the current task list. */
     @Override
-    public void execute(List<Task> tasks, Ui ui) {
+    public void execute(TaskList tasks, Ui ui) {
         StringBuilder taskList = new StringBuilder("Here are the tasks in your list:\n");
         for (int index = 0; index < tasks.size(); index++) {
             taskList.append(index + 1).append(". ").append(tasks.get(index)).append('\n');

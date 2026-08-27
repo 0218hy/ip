@@ -1,5 +1,3 @@
-import java.util.List;
-
 /**
  * Represents one action that Pebby can perform in response to a user command.
  *
@@ -8,7 +6,7 @@ import java.util.List;
  */
 public abstract class Command {
     /** Performs this command using the current task list and UI. */
-    public abstract void execute(List<Task> tasks, Ui ui);
+    public abstract void execute(TaskList tasks, Ui ui);
 
     /** Returns whether this command should end Pebby's command loop. */
     public boolean isExit() {
