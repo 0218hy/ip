@@ -203,13 +203,17 @@ public class Pebby {
         }
 
         // Getting user input
-        while (ui.hasNextCommand()) {
+        boolean isExit = false;
+        while (ui.hasNextCommand() && !isExit) {
             String command = ui.readCommand();
             ParsedCommand parsedCommand = Parser.parse(command);
             CommandType commandType = parsedCommand.getType();
             String argument = parsedCommand.getArgument();
             if (commandType == CommandType.BYE) {
-                break;
+                Command exitCommand = new ExitCommand();
+                exitCommand.execute(tasks, ui);
+                isExit = exitCommand.isExit();
+                continue;
             }
 
             ui.showSeparator();
