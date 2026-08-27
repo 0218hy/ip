@@ -31,6 +31,7 @@ public class AddCommand extends Command {
         }
     }
 
+    /** Creates and adds the task represented by this command's type and argument. */
     private Task createTask(TaskList tasks) {
         switch (type) {
         case TODO:
@@ -45,6 +46,7 @@ public class AddCommand extends Command {
         }
     }
 
+    /** Parses this command's deadline argument and adds the resulting task. */
     private Deadline addDeadline(TaskList tasks) {
         requireNotBlank(argument, "Please provide a description and deadline.");
         int byIndex = argument.indexOf("/by");
@@ -58,6 +60,7 @@ public class AddCommand extends Command {
         return tasks.addDeadline(description, Deadline.parseDate(by).toString());
     }
 
+    /** Parses this command's event argument and adds the resulting task. */
     private Event addEvent(TaskList tasks) {
         requireNotBlank(argument, "Please provide a description, start time, and end time.");
         int fromIndex = argument.indexOf("/from");
@@ -80,16 +83,19 @@ public class AddCommand extends Command {
         return tasks.addEvent(description, from, to);
     }
 
+    /** Rejects blank command fields with the supplied user-facing message. */
     private void requireNotBlank(String value, String message) {
         if (value.isBlank()) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /** Returns Pebby's message stating the current number of tasks. */
     private String taskCountMessage(TaskList tasks) {
         return "Now you have " + tasks.size() + " tasks in the list.";
     }
 
+    /** Returns the user-facing name of the task type for validation errors. */
     private String typeName() {
         switch (type) {
         case TODO:

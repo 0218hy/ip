@@ -11,6 +11,7 @@ public class Deadline extends Task {
             DateTimeFormatter.ofPattern("MMM dd uuuu", Locale.ENGLISH);
     private final LocalDate by;
 
+    /** Creates a deadline by parsing its date from ISO {@code yyyy-MM-dd} text. */
     public Deadline(String description, String by) {
         this(description, parseDate(by));
     }
@@ -45,6 +46,7 @@ public class Deadline extends Task {
         return by.equals(date);
     }
 
+    /** Returns the user-facing representation of this deadline. */
     @Override
     public String toString() {
         return "[D] " + super.toString() + " (by: " + by.format(OUTPUT_DATE_FORMAT) + ")";

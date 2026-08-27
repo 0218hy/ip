@@ -26,6 +26,7 @@ public class DeleteCommand extends Command {
         }
     }
 
+    /** Converts a validated one-based task number into a zero-based list index. */
     private int taskIndexFrom(String taskNumberText, TaskList tasks) {
         try {
             int taskNumber = Integer.parseInt(taskNumberText);
@@ -39,6 +40,7 @@ public class DeleteCommand extends Command {
         }
     }
 
+    /** Returns Pebby's message stating the current number of tasks. */
     private String taskCountMessage(TaskList tasks) {
         return "Now you have " + tasks.size() + " tasks in the list.";
     }

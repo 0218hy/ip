@@ -17,6 +17,7 @@ import pebby.task.Todo;
 
 /** Saves Pebby's tasks to, and restores them from, a local text file. */
 public class Storage {
+    /** The default relative path used to store Pebby's saved tasks. */
     public static final Path DEFAULT_FILE_PATH = Path.of("data", "pebby.txt");
     private static final String FIELD_SEPARATOR = " | ";
     private final Path filePath;
@@ -81,6 +82,7 @@ public class Storage {
         }
     }
 
+    /** Recreates one task from its serialized record, rejecting malformed data. */
     private Task parseTask(String line) {
         String[] fields = line.split(" \\| ", -1);
         if (fields.length < 3 || fields[0].length() != 1
@@ -109,6 +111,7 @@ public class Storage {
         return task;
     }
 
+    /** Converts a task into the record format used in Pebby's data file. */
     private String formatTask(Task task) {
         String status = task.isDone() ? "1" : "0";
         if (task instanceof Todo) {
@@ -127,16 +130,19 @@ public class Storage {
         throw new IllegalArgumentException("Cannot save an unknown task type");
     }
 
+    /** Ensures a serialized record has the expected number of fields. */
     private void requireFieldCount(String[] fields, int expectedCount) {
         if (fields.length != expectedCount) {
             throw new IllegalArgumentException("Wrong number of saved fields");
         }
     }
 
+    /** Encodes a text field so separators and newlines cannot corrupt a record. */
     private String encode(String value) {
         return Base64.getEncoder().encodeToString(value.getBytes(StandardCharsets.UTF_8));
     }
 
+    /** Decodes a text field from the Base64 representation stored in a record. */
     private String decode(String value) {
         try {
             return new String(Base64.getDecoder().decode(value), StandardCharsets.UTF_8);
@@ -147,9 +153,12 @@ public class Storage {
 
     /** The tasks recovered at startup and the number of damaged records ignored. */
     public static class LoadResult {
+        /** The valid tasks recovered from the data file. */
         public final List<Task> tasks;
+        /** The number of invalid records skipped while loading. */
         public final int skippedRecords;
 
+        /** Creates a result containing recovered tasks and the damaged-record count. */
         LoadResult(List<Task> tasks, int skippedRecords) {
             this.tasks = tasks;
             this.skippedRecords = skippedRecords;

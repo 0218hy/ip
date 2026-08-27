@@ -19,7 +19,9 @@ import pebby.ui.Ui;
 
 /** A command-line task chatbot that keeps tasks in a local data file. */
 public class Pebby {
+    /** Holds the tasks managed during the current Pebby session. */
     private static TaskList tasks = new TaskList();
+    /** Persists the current task list between Pebby sessions. */
     private static final Storage storage = new Storage();
 
 //    No longer usse pure Task
@@ -30,12 +32,14 @@ public class Pebby {
 //        return "added: " + newTask.description + '\n';
 //    }
 
+    /** Marks the task at the supplied zero-based index as complete and saves the change. */
     public static String markTask(int taskNo) {
         Task task = tasks.markAsDone(taskNo);
         String output = "Nice! I've marked this task as done: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
+    /** Marks the task at the supplied zero-based index as incomplete and saves the change. */
     public static String unmarkTask(int taskNo) {
         Task task = tasks.markAsNotDone(taskNo);
         String output = "OK, I've marked this task as not done yet: \n";
@@ -108,6 +112,7 @@ public class Pebby {
         }
     }
 
+    /** Starts Pebby, processes commands until exit, and displays the farewell message. */
     public static void main(String[] args) {
         Ui ui = new Ui();
         String loadMessage = loadTasks();
