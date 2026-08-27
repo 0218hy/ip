@@ -1,7 +1,7 @@
 package pebby;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.List;
 
 import pebby.command.AddCommand;
 import pebby.command.Command;
@@ -12,7 +12,6 @@ import pebby.parser.CommandType;
 import pebby.parser.ParsedCommand;
 import pebby.parser.Parser;
 import pebby.storage.Storage;
-import pebby.task.Deadline;
 import pebby.task.Task;
 import pebby.task.TaskList;
 import pebby.ui.Ui;
@@ -43,32 +42,23 @@ public class Pebby {
     }
 
     /**
-     * Finds every deadline that occurs on the date supplied by the user.
+     * Finds and formats tasks whose descriptions contain the supplied keyword.
      */
-    public static String handleFind(String dateText) {
-        try {
-            if (dateText.isBlank()) {
-                throw new IllegalArgumentException("Please provide a date to search for.");
-            }
-
-            LocalDate date = Deadline.parseDate(dateText);
-            StringBuilder matches = new StringBuilder("Deadlines on ")
-                    .append(date).append(":\n");
-            int matchCount = 0;
-            for (int index = 0; index < tasks.size(); index++) {
-                Task task = tasks.get(index);
-                if (task instanceof Deadline && ((Deadline) task).isOn(date)) {
-                    matches.append(index + 1).append(". ").append(task).append('\n');
-                    matchCount++;
-                }
-            }
-            if (matchCount == 0) {
-                return "No deadlines found on " + date + ".\n";
-            }
-            return matches.toString();
-        } catch (IllegalArgumentException exception) {
-            return "Invalid find: " + exception.getMessage();
+    public static String handleFind(String keyword) {
+        if (keyword.isBlank()) {
+            return "Invalid find: Please provide a keyword to search for.";
         }
+
+        List<Task> matchingTasks = tasks.findTasks(keyword);
+        if (matchingTasks.isEmpty()) {
+            return "No matching tasks found.\n";
+        }
+
+        StringBuilder matches = new StringBuilder("Here are the matching tasks in your list:\n");
+        for (int index = 0; index < matchingTasks.size(); index++) {
+            matches.append(index + 1).append(". ").append(matchingTasks.get(index)).append('\n');
+        }
+        return matches.toString();
     }
 
     /**
