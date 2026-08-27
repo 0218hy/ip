@@ -1,28 +1,10 @@
-import java.util.ArrayList;
 import java.io.IOException;
-import java.util.Scanner;
 import java.time.LocalDate;
 
 /** A command-line task chatbot that keeps tasks in a local data file. */
 public class Pebby {
-//  public static Task[] tasks = new Task[100];
-//  public static int taskCount = 0;
-    public static ArrayList<Task> tasks = new ArrayList<>();
+    private static TaskList tasks = new TaskList();
     private static final Storage storage = new Storage();
-
-    public static void greetUser() {
-        String banner = " ____       _     _          \n"
-                + "|  _ \\  ___| |__ | |__  _   _\n"
-                + "| |_) |/ _ \\ '_ \\| '_ \\| | | |\n"
-                + "|  __/|  __/ |_) | |_) | |_| |\n"
-                + "|_|    \\___|_.__/|_.__/ \\__, |\n"
-                + "                         |___/\n";
-        System.out.println("____________________________________________________________");
-        System.out.print(banner);
-        System.out.println("Hello! I'm Pebby.");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
-    }
 
 //    No longer usse pure Task
 //    public static String addTask(String description) {
@@ -32,98 +14,21 @@ public class Pebby {
 //        return "added: " + newTask.description + '\n';
 //    }
 
-    public static String listTask() {
-        StringBuilder taskList = new StringBuilder();
-        taskList.append("Here are the tasks in your list:").append('\n');
-        for (int i = 0; i < tasks.size(); i++) {
-            int taskNo = i + 1;
-            taskList.append(taskNo).append(". ").append(tasks.get(i).toString()).append('\n');
-        }
-        return taskList.toString();
-    }
-
     public static String markTask(int taskNo) {
-        Task task = tasks.get(taskNo);
-        task.markAsDone();
+        Task task = tasks.markAsDone(taskNo);
         String output = "Nice! I've marked this task as done: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
     public static String unmarkTask(int taskNo) {
-        Task task = tasks.get(taskNo);
-        task.markAsNotDone();
+        Task task = tasks.markAsNotDone(taskNo);
         String output = "OK, I've marked this task as not done yet: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
-    public static String addTodo(String description) {
-        Todo todo = new Todo(description);
-        tasks.add(todo);
-        String output = "Got it. I've added this task: \n";
-        return output + "  " + todo.toString() + saveTasks();
-    }
-
-    public static String addDeadline(String description, String by) {
-        Deadline deadline = new Deadline(description, by);
-        tasks.add(deadline);
-        String output = "Got it. I've added this task: \n";
-        return output + "  " + deadline.toString() + saveTasks();
-    }
-
-    public static String addEvent(String description, String from, String to) {
-        Event event = new Event(description, from, to);
-        tasks.add(event);
-        String output = "Got it. I've added this task: \n";
-        return output + "  " + event.toString() + saveTasks();
-    }
-
-    public static String taskInList() {
-        return "Now you have " + tasks.size() + " tasks in the list.";
-    }
-
-    public static String handleTodo(String command) {
-        try {
-            String description = CommandType.TODO.argumentFrom(command);
-            if (description.isBlank()) {
-                throw new IllegalArgumentException("Please provide a description.");
-            }
-            return addTodo(description) + '\n' + taskInList();
-        } catch (IllegalArgumentException e) {
-            return "Invalid todo: " + e.getMessage();
-        }
-    }
-
-    public static String handleDeadline(String command) {
-        try {
-            String input = CommandType.DEADLINE.argumentFrom(command);
-            if (input.isBlank()) {
-                throw new IllegalArgumentException("Please provide a description and deadline.");
-            }
-
-            int byIndex = input.indexOf("/by");
-            if (byIndex == -1) {
-                throw new IllegalArgumentException("Please include /by followed by a deadline.");
-            }
-
-            String description = input.substring(0, byIndex).trim();
-            String by = input.substring(byIndex + "/by".length()).trim();
-            if (description.isBlank()) {
-                throw new IllegalArgumentException("Please provide a description.");
-            }
-            if (by.isBlank()) {
-                throw new IllegalArgumentException("Please provide a deadline after /by.");
-            }
-            LocalDate deadlineDate = Deadline.parseDate(by);
-            return addDeadline(description, deadlineDate.toString()) + '\n' + taskInList();
-        } catch (IllegalArgumentException e) {
-            return "Invalid deadline: " + e.getMessage();
-        }
-    }
-
     /** Finds and displays every deadline that occurs on the date supplied by the user. */
-    public static String handleFind(String command) {
+    public static String handleFind(String dateText) {
         try {
-            String dateText = CommandType.FIND.argumentFrom(command);
             if (dateText.isBlank()) {
                 throw new IllegalArgumentException("Please provide a date to search for.");
             }
@@ -148,53 +53,10 @@ public class Pebby {
         }
     }
 
-    public static String handleEvent(String command) {
-        try {
-            String input = CommandType.EVENT.argumentFrom(command);
-            if (input.isBlank()) {
-                throw new IllegalArgumentException("Please provide a description, start time, and end time.");
-            }
-
-            int fromIndex = input.indexOf("/from");
-            int toIndex = input.indexOf("/to");
-            if (fromIndex == -1) {
-                throw new IllegalArgumentException("Please include /from followed by a start time.");
-            }
-            if (toIndex == -1) {
-                throw new IllegalArgumentException("Please include /to followed by an end time.");
-            }
-            if (toIndex < fromIndex) {
-                throw new IllegalArgumentException("Please put /from before /to.");
-            }
-
-            String description = input.substring(0, fromIndex).trim();
-            String from = input.substring(fromIndex + "/from".length(), toIndex).trim();
-            String to = input.substring(toIndex + "/to".length()).trim();
-            if (description.isBlank()) {
-                throw new IllegalArgumentException("Please provide a description.");
-            }
-            if (from.isBlank()) {
-                throw new IllegalArgumentException("Please provide a start time after /from.");
-            }
-            if (to.isBlank()) {
-                throw new IllegalArgumentException("Please provide an end time after /to.");
-            }
-            return addEvent(description, from, to) + '\n' + taskInList();
-        } catch (IllegalArgumentException e) {
-            return "Invalid event: " + e.getMessage();
-        }
-    }
-
-    public static String deleteTask(int index) {
-        String output = "Noted. I've removed this task: " + '\n' + tasks.get(index).toString();
-        tasks.remove(index);
-        return output + '\n' + taskInList() + saveTasks();
-    }
-
     /** Saves the current list and turns an I/O failure into a helpful UI message. */
     private static String saveTasks() {
         try {
-            storage.save(tasks);
+            storage.save(tasks.asList());
             return "";
         } catch (IOException | IllegalArgumentException exception) {
             return "\nWarning: your task was changed, but Pebby could not save it: "
@@ -206,7 +68,7 @@ public class Pebby {
     private static String loadTasks() {
         try {
             Storage.LoadResult result = storage.load();
-            tasks = new ArrayList<>(result.tasks);
+            tasks = new TaskList(result.tasks);
             if (result.skippedRecords > 0) {
                 return "Warning: ignored " + result.skippedRecords
                         + " invalid saved task record(s).";
@@ -231,75 +93,75 @@ public class Pebby {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Ui ui = new Ui();
         String loadMessage = loadTasks();
-        greetUser();
+        ui.showWelcome();
         if (!loadMessage.isEmpty()) {
-            System.out.println(loadMessage);
-            System.out.println("____________________________________________________________");
+            ui.showLine(loadMessage);
+            ui.showSeparator();
         }
 
         // Getting user input
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
-            CommandType commandType = CommandType.from(command);
+        boolean isExit = false;
+        while (ui.hasNextCommand() && !isExit) {
+            String command = ui.readCommand();
+            ParsedCommand parsedCommand = Parser.parse(command);
+            CommandType commandType = parsedCommand.getType();
+            String argument = parsedCommand.getArgument();
             if (commandType == CommandType.BYE) {
-                break;
+                Command exitCommand = new ExitCommand();
+                exitCommand.execute(tasks, ui, storage);
+                isExit = exitCommand.isExit();
+                continue;
             }
 
-            System.out.println("____________________________________________________________");
+            ui.showSeparator();
             switch (commandType) {
                 case LIST:
-                    System.out.print(listTask());
+                    new ListCommand().execute(tasks, ui, storage);
                     break;
                 case MARK: {
                     try {
-                        System.out.println(markTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(markTask(taskIndexFrom(argument)));
                     } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid mark: " + exception.getMessage());
+                        ui.showLine("Invalid mark: " + exception.getMessage());
                     }
                     break;
                 }
                 case UNMARK: {
                     try {
-                        System.out.println(unmarkTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(unmarkTask(taskIndexFrom(argument)));
                     } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid unmark: " + exception.getMessage());
+                        ui.showLine("Invalid unmark: " + exception.getMessage());
                     }
                     break;
                 }
                 case TODO: {
-                    System.out.println(handleTodo(command));
+                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
                     break;
                 }
                 case DEADLINE: {
-                    System.out.println(handleDeadline(command));
+                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
                     break;
                 }
                 case EVENT: {
-                    System.out.println(handleEvent(command));
+                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
                     break;
                 }
                 case FIND: {
-                    System.out.print(handleFind(command));
+                    ui.show(handleFind(argument));
                     break;
                 }
                 case DELETE: {
-                    try {
-                        System.out.println(deleteTask(taskIndexFrom(commandType.argumentFrom(command))));
-                    } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid delete: " + exception.getMessage());
-                    }
+                    new DeleteCommand(argument).execute(tasks, ui, storage);
                     break;
                 }
                 case BYE:
                 default:
-                    System.out.println("Hmmm... What does this mean? My pebble brain cant understand.");
+                    ui.showLine("Hmmm... What does this mean? My pebble brain cant understand.");
             }
-            System.out.println("____________________________________________________________");
+            ui.showSeparator();
         }
-        System.out.println("____________________________________________________________");
-        System.out.println("Bye Bye!");
-        System.out.println("____________________________________________________________");
+        ui.showGoodbye();
     }
 }
