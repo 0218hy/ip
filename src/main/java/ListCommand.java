@@ -2,7 +2,7 @@
 public class ListCommand extends Command {
     /** Formats and displays the current task list. */
     @Override
-    public void execute(TaskList tasks, Ui ui) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) {
         StringBuilder taskList = new StringBuilder("Here are the tasks in your list:\n");
         for (int index = 0; index < tasks.size(); index++) {
             taskList.append(index + 1).append(". ").append(tasks.get(index)).append('\n');

@@ -2,7 +2,7 @@
 public class ExitCommand extends Command {
     /** Does not need to change tasks or display a message before Pebby closes. */
     @Override
-    public void execute(TaskList tasks, Ui ui) {
+    public void execute(TaskList tasks, Ui ui, Storage storage) {
         // Pebby displays the farewell after the command loop ends.
     }
 

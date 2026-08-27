@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * Represents one action that Pebby can perform in response to a user command.
  *
@@ -5,11 +7,22 @@
  * work out of Pebby's main loop.</p>
  */
 public abstract class Command {
-    /** Performs this command using the current task list and UI. */
-    public abstract void execute(TaskList tasks, Ui ui);
+    /** Performs this command using the current task list, UI, and storage. */
+    public abstract void execute(TaskList tasks, Ui ui, Storage storage);
 
     /** Returns whether this command should end Pebby's command loop. */
     public boolean isExit() {
         return false;
+    }
+
+    /** Saves the current tasks and converts a save failure into a UI warning. */
+    protected String saveTasks(TaskList tasks, Storage storage) {
+        try {
+            storage.save(tasks.asList());
+            return "";
+        } catch (IOException | IllegalArgumentException exception) {
+            return "\nWarning: your task was changed, but Pebby could not save it: "
+                    + exception.getMessage();
+        }
     }
 }
