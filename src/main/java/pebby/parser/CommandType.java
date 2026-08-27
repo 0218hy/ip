@@ -1,6 +1,8 @@
 package pebby.parser;
 
-/** Identifies supported command words and extracts their user-supplied arguments. */
+/**
+ * Identifies the command words Pebby supports.
+ */
 public enum CommandType {
     LIST("list"),
     MARK("mark"),
@@ -19,6 +21,9 @@ public enum CommandType {
         this.keyword = keyword;
     }
 
+    /**
+     * Returns the type that matches a command, or {@link #UNKNOWN} when none matches.
+     */
     public static CommandType from(String command) {
         if (command == null) {
             return UNKNOWN;
@@ -37,6 +42,9 @@ public enum CommandType {
         return UNKNOWN;
     }
 
+    /**
+     * Returns the trimmed text following this type's command word.
+     */
     public String argumentFrom(String command) {
         return command.trim().substring(keyword.length()).trim();
     }

@@ -8,18 +8,21 @@ import pebby.task.Task;
 import pebby.task.TaskList;
 import pebby.ui.Ui;
 
-/** Adds a todo, deadline, or event task described by the user. */
+/**
+ * Adds a todo, deadline, or event task described by the user.
+ */
 public class AddCommand extends Command {
     private final CommandType type;
     private final String argument;
 
-    /** Creates an add command for the recognised task type and its argument. */
+    /**
+     * Creates an add command for the recognized task type and its argument.
+     */
     public AddCommand(CommandType type, String argument) {
         this.type = type;
         this.argument = argument;
     }
 
-    /** Validates the argument, adds the task, saves it, and displays the result. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         try {

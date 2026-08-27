@@ -5,17 +5,24 @@ import java.time.format.DateTimeParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-/** Represents a task that must be completed by a supplied deadline. */
+/**
+ * Represents a task that must be completed by a supplied deadline.
+ */
 public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd uuuu", Locale.ENGLISH);
     private final LocalDate by;
 
+    /**
+     * Creates a deadline by parsing an ISO date from the supplied text.
+     */
     public Deadline(String description, String by) {
         this(description, parseDate(by));
     }
 
-    /** Creates a deadline using an already validated date. */
+    /**
+     * Creates a deadline using an already validated date.
+     */
     public Deadline(String description, LocalDate by) {
         super(description);
         this.by = by;
@@ -35,12 +42,16 @@ public class Deadline extends Task {
         }
     }
 
-    /** Returns the deadline in ISO format so it can be saved and loaded reliably. */
+    /**
+     * Returns the deadline in ISO format so it can be saved and loaded reliably.
+     */
     public String getBy() {
         return by.toString();
     }
 
-    /** Returns whether this deadline falls on the specified date. */
+    /**
+     * Returns whether this deadline falls on the specified date.
+     */
     public boolean isOn(LocalDate date) {
         return by.equals(date);
     }

@@ -10,18 +10,24 @@ public class ParsedCommand {
     private final CommandType type;
     private final String argument;
 
-    /** Creates a parsed command with its recognised type and remaining text. */
+    /**
+     * Creates a parsed command with its recognized type and remaining text.
+     */
     public ParsedCommand(CommandType type, String argument) {
         this.type = type;
         this.argument = argument;
     }
 
-    /** Returns the recognised command type. */
+    /**
+     * Returns the recognized command type.
+     */
     public CommandType getType() {
         return type;
     }
 
-    /** Returns the text after the command word, without surrounding spaces. */
+    /**
+     * Returns the text after the command word, without surrounding spaces.
+     */
     public String getArgument() {
         return argument;
     }

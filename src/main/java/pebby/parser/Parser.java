@@ -1,6 +1,8 @@
 package pebby.parser;
 
-/** Converts a raw line of user input into a command type and argument. */
+/**
+ * Converts a raw line of user input into a command type and argument.
+ */
 public class Parser {
     /**
      * Identifies the command word and separates it from the user-supplied argument.
