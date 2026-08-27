@@ -1,3 +1,5 @@
+package pebby.storage;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AtomicMoveNotSupportedException;
@@ -7,6 +9,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import pebby.task.Deadline;
+import pebby.task.Event;
+import pebby.task.Task;
+import pebby.task.Todo;
 
 /** Saves Pebby's tasks to, and restores them from, a local text file. */
 public class Storage {
@@ -103,7 +110,7 @@ public class Storage {
     }
 
     private String formatTask(Task task) {
-        String status = task.isDone ? "1" : "0";
+        String status = task.isDone() ? "1" : "0";
         if (task instanceof Todo) {
             return String.join(FIELD_SEPARATOR, "T", status, encode(task.getDescription()));
         }

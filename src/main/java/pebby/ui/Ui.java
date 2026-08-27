@@ -1,4 +1,8 @@
+package pebby.ui;
+
 import java.util.Scanner;
+
+import pebby.Pebby;
 
 /**
  * Handles Pebby's console input and output.

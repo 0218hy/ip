@@ -1,4 +1,10 @@
+package pebby.command;
+
 import java.io.IOException;
+
+import pebby.storage.Storage;
+import pebby.task.TaskList;
+import pebby.ui.Ui;
 
 /**
  * Represents one action that Pebby can perform in response to a user command.

@@ -1,3 +1,13 @@
+package pebby.command;
+
+import pebby.parser.CommandType;
+import pebby.storage.Storage;
+import pebby.task.Deadline;
+import pebby.task.Event;
+import pebby.task.Task;
+import pebby.task.TaskList;
+import pebby.ui.Ui;
+
 /** Adds a todo, deadline, or event task described by the user. */
 public class AddCommand extends Command {
     private final CommandType type;

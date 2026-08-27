@@ -1,3 +1,5 @@
+package pebby.task;
+
 /** Represents the shared completion state and description of a task. */
 public class Task {
     protected String description;
@@ -28,6 +30,11 @@ public class Task {
 
     public String getStatusIcon() {
         return (isDone ? "X" : " ");
+    }
+
+    /** Returns whether this task has been completed. */
+    public boolean isDone() {
+        return isDone;
     }
 
     @Override
