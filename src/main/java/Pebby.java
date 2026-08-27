@@ -17,16 +17,6 @@ public class Pebby {
 //        return "added: " + newTask.description + '\n';
 //    }
 
-    public static String listTask() {
-        StringBuilder taskList = new StringBuilder();
-        taskList.append("Here are the tasks in your list:").append('\n');
-        for (int i = 0; i < tasks.size(); i++) {
-            int taskNo = i + 1;
-            taskList.append(taskNo).append(". ").append(tasks.get(i).toString()).append('\n');
-        }
-        return taskList.toString();
-    }
-
     public static String markTask(int taskNo) {
         Task task = tasks.get(taskNo);
         task.markAsDone();
@@ -235,7 +225,7 @@ public class Pebby {
             ui.showSeparator();
             switch (commandType) {
                 case LIST:
-                    ui.show(listTask());
+                    new ListCommand().execute(tasks, ui);
                     break;
                 case MARK: {
                     try {
