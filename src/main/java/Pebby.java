@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Scanner;
+import java.time.LocalDate;
 
 /** A command-line task chatbot that keeps tasks in a local data file. */
 public class Pebby {
@@ -112,9 +113,38 @@ public class Pebby {
             if (by.isBlank()) {
                 throw new IllegalArgumentException("Please provide a deadline after /by.");
             }
-            return addDeadline(description, by) + '\n' + taskInList();
+            LocalDate deadlineDate = Deadline.parseDate(by);
+            return addDeadline(description, deadlineDate.toString()) + '\n' + taskInList();
         } catch (IllegalArgumentException e) {
             return "Invalid deadline: " + e.getMessage();
+        }
+    }
+
+    /** Finds and displays every deadline that occurs on the date supplied by the user. */
+    public static String handleFind(String command) {
+        try {
+            String dateText = CommandType.FIND.argumentFrom(command);
+            if (dateText.isBlank()) {
+                throw new IllegalArgumentException("Please provide a date to search for.");
+            }
+
+            LocalDate date = Deadline.parseDate(dateText);
+            StringBuilder matches = new StringBuilder("Deadlines on ")
+                    .append(date).append(":\n");
+            int matchCount = 0;
+            for (int index = 0; index < tasks.size(); index++) {
+                Task task = tasks.get(index);
+                if (task instanceof Deadline && ((Deadline) task).isOn(date)) {
+                    matches.append(index + 1).append(". ").append(task).append('\n');
+                    matchCount++;
+                }
+            }
+            if (matchCount == 0) {
+                return "No deadlines found on " + date + ".\n";
+            }
+            return matches.toString();
+        } catch (IllegalArgumentException exception) {
+            return "Invalid find: " + exception.getMessage();
         }
     }
 
@@ -248,6 +278,10 @@ public class Pebby {
                 }
                 case EVENT: {
                     System.out.println(handleEvent(command));
+                    break;
+                }
+                case FIND: {
+                    System.out.print(handleFind(command));
                     break;
                 }
                 case DELETE: {
