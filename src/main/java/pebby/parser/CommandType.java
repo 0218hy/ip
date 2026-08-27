@@ -1,3 +1,5 @@
+package pebby.parser;
+
 /** Identifies supported command words and extracts their user-supplied arguments. */
 public enum CommandType {
     LIST("list"),

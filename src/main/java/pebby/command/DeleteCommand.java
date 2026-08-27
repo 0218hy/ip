@@ -1,3 +1,10 @@
+package pebby.command;
+
+import pebby.storage.Storage;
+import pebby.task.Task;
+import pebby.task.TaskList;
+import pebby.ui.Ui;
+
 /** Deletes the task identified by a user-supplied one-based task number. */
 public class DeleteCommand extends Command {
     private final String argument;

@@ -1,3 +1,5 @@
+package pebby.parser;
+
 /**
  * Holds the command type and argument extracted from one line of user input.
  *

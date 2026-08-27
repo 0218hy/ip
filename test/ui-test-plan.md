@@ -15,7 +15,7 @@ Verify that a task created in one session is stored for a later session.
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-restart.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-restart.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-restart.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-restart.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -53,7 +53,7 @@ Verify that the task from the preceding session is available immediately after P
 
 ### Command
 ```sh
-java -Dpebby.storage.path=/private/tmp/pebby-ui-restart.txt -cp out/production/ip Pebby
+java -Dpebby.storage.path=/private/tmp/pebby-ui-restart.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -90,7 +90,7 @@ Verify that an invalid mark command reports an error instead of crashing Pebby.
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-invalid-mark.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-invalid-mark.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-invalid-mark.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-invalid-mark.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -126,7 +126,7 @@ Verify that a deadline command accepts an ISO date, stores it as a date, and dis
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-deadline.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-deadline.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-deadline.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-deadline.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -164,7 +164,7 @@ Verify that a todo command stores its description and reports the updated task c
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-todo.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-todo.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-todo.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-todo.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -202,7 +202,7 @@ Verify that an event command stores its description, start time, end time, and u
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-event.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-event.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-event.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-event.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -240,7 +240,7 @@ Verify that an invalid deadline date produces a helpful error without stopping P
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-invalid-date.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-invalid-date.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-invalid-date.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-invalid-date.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -276,7 +276,7 @@ Verify that find lists only the deadlines occurring on the requested date.
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-find.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-find.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-find.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-find.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
@@ -325,7 +325,7 @@ Verify that deleting a task by its 1-based list position removes the correct tas
 
 ### Command
 ```sh
-rm -f /private/tmp/pebby-ui-delete.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-delete.txt -cp out/production/ip Pebby
+rm -f /private/tmp/pebby-ui-delete.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-delete.txt -cp out/production/ip pebby.Pebby
 ```
 
 ### Input
