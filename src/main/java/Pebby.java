@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.io.IOException;
-import java.util.Scanner;
 import java.time.LocalDate;
 
 /** A command-line task chatbot that keeps tasks in a local data file. */
@@ -9,20 +8,6 @@ public class Pebby {
 //  public static int taskCount = 0;
     public static ArrayList<Task> tasks = new ArrayList<>();
     private static final Storage storage = new Storage();
-
-    public static void greetUser() {
-        String banner = " ____       _     _          \n"
-                + "|  _ \\  ___| |__ | |__  _   _\n"
-                + "| |_) |/ _ \\ '_ \\| '_ \\| | | |\n"
-                + "|  __/|  __/ |_) | |_) | |_| |\n"
-                + "|_|    \\___|_.__/|_.__/ \\__, |\n"
-                + "                         |___/\n";
-        System.out.println("____________________________________________________________");
-        System.out.print(banner);
-        System.out.println("Hello! I'm Pebby.");
-        System.out.println("What can I do for you?");
-        System.out.println("____________________________________________________________");
-    }
 
 //    No longer usse pure Task
 //    public static String addTask(String description) {
@@ -231,75 +216,73 @@ public class Pebby {
     }
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Ui ui = new Ui();
         String loadMessage = loadTasks();
-        greetUser();
+        ui.showWelcome();
         if (!loadMessage.isEmpty()) {
-            System.out.println(loadMessage);
-            System.out.println("____________________________________________________________");
+            ui.showLine(loadMessage);
+            ui.showSeparator();
         }
 
         // Getting user input
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+        while (ui.hasNextCommand()) {
+            String command = ui.readCommand();
             CommandType commandType = CommandType.from(command);
             if (commandType == CommandType.BYE) {
                 break;
             }
 
-            System.out.println("____________________________________________________________");
+            ui.showSeparator();
             switch (commandType) {
                 case LIST:
-                    System.out.print(listTask());
+                    ui.show(listTask());
                     break;
                 case MARK: {
                     try {
-                        System.out.println(markTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(markTask(taskIndexFrom(commandType.argumentFrom(command))));
                     } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid mark: " + exception.getMessage());
+                        ui.showLine("Invalid mark: " + exception.getMessage());
                     }
                     break;
                 }
                 case UNMARK: {
                     try {
-                        System.out.println(unmarkTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(unmarkTask(taskIndexFrom(commandType.argumentFrom(command))));
                     } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid unmark: " + exception.getMessage());
+                        ui.showLine("Invalid unmark: " + exception.getMessage());
                     }
                     break;
                 }
                 case TODO: {
-                    System.out.println(handleTodo(command));
+                    ui.showLine(handleTodo(command));
                     break;
                 }
                 case DEADLINE: {
-                    System.out.println(handleDeadline(command));
+                    ui.showLine(handleDeadline(command));
                     break;
                 }
                 case EVENT: {
-                    System.out.println(handleEvent(command));
+                    ui.showLine(handleEvent(command));
                     break;
                 }
                 case FIND: {
-                    System.out.print(handleFind(command));
+                    ui.show(handleFind(command));
                     break;
                 }
                 case DELETE: {
                     try {
-                        System.out.println(deleteTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(deleteTask(taskIndexFrom(commandType.argumentFrom(command))));
                     } catch (IllegalArgumentException exception) {
-                        System.out.println("Invalid delete: " + exception.getMessage());
+                        ui.showLine("Invalid delete: " + exception.getMessage());
                     }
                     break;
                 }
                 case BYE:
                 default:
-                    System.out.println("Hmmm... What does this mean? My pebble brain cant understand.");
+                    ui.showLine("Hmmm... What does this mean? My pebble brain cant understand.");
             }
-            System.out.println("____________________________________________________________");
+            ui.showSeparator();
         }
-        System.out.println("____________________________________________________________");
-        System.out.println("Bye Bye!");
-        System.out.println("____________________________________________________________");
+        ui.showGoodbye();
     }
 }
