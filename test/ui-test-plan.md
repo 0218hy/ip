@@ -269,10 +269,10 @@ Bye Bye!
 ____________________________________________________________
 ```
 
-## Test Case: Find deadlines on a date
+## Test Case: Find tasks by keyword
 
 ### Aim
-Verify that find lists only the deadlines occurring on the requested date.
+Verify that find lists only tasks whose descriptions contain the requested keyword.
 
 ### Command
 ```sh
@@ -282,8 +282,8 @@ rm -f /private/tmp/pebby-ui-find.txt && java -Dpebby.storage.path=/private/tmp/p
 ### Input
 ```text
 deadline return book /by 2019-12-02
-deadline submit report /by 2019-12-03
-find 2019-12-02
+todo buy groceries
+find book
 bye
 ```
 
@@ -306,11 +306,11 @@ Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task: 
-  [D] [ ] submit report (by: Dec 03 2019)
+  [T] [ ] buy groceries
 Now you have 2 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
-Deadlines on 2019-12-02:
+Here are the matching tasks in your list:
 1. [D] [ ] return book (by: Dec 02 2019)
 ____________________________________________________________
 ____________________________________________________________

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class TaskTest {
@@ -57,5 +59,25 @@ class TaskTest {
         task.setDone(false);
 
         assertFalse(task.isDone());
+    }
+
+    @Test
+    void findTasks_keywordMatchesDescriptions_returnsTasksInTaskListOrder() {
+        TaskList tasks = new TaskList();
+        Todo firstMatch = tasks.addTodo("read book");
+        tasks.addTodo("buy groceries");
+        Todo secondMatch = tasks.addTodo("return book");
+
+        List<Task> matchingTasks = tasks.findTasks("book");
+
+        assertEquals(List.of(firstMatch, secondMatch), matchingTasks);
+    }
+
+    @Test
+    void findTasks_keywordMatchesNoDescriptions_returnsEmptyList() {
+        TaskList tasks = new TaskList();
+        tasks.addTodo("read book");
+
+        assertTrue(tasks.findTasks("lecture").isEmpty());
     }
 }
