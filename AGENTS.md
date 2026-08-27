@@ -38,8 +38,9 @@ Do not commit or push unless explicitly asked.
 
 After every code update, complete these steps before reporting the work as finished:
 
-1. Review `test/ui-test-plan.md` and update it when the changed behavior needs a new test case, changed input, or changed expected output. If the update does not affect the tested UI behavior, leave the plan unchanged but confirm that it was reviewed.
-2. Invoke the project-local `test-ui` skill by following `skills/test-ui/SKILL.md` and running its test runner from the project root:
+1. Update the JUnit tests after each code change. Maintain tests for at least the top 50% highest-value methods, prioritizing complex, core, and critical business logic over simple accessors.
+2. Review `test/ui-test-plan.md` and update it when the changed behavior needs a new test case, changed input, or changed expected output. If the update does not affect the tested UI behavior, leave the plan unchanged but confirm that it was reviewed.
+3. Invoke the project-local `test-ui` skill by following `skills/test-ui/SKILL.md` and running its test runner from the project root:
 
    ```sh
    python3 skills/test-ui/scripts/run_ui_tests.py
