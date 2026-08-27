@@ -13,15 +13,21 @@ import pebby.ui.Ui;
  * work out of Pebby's main loop.</p>
  */
 public abstract class Command {
-    /** Performs this command using the current task list, UI, and storage. */
+    /**
+     * Performs this command using the current task list, UI, and storage.
+     */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage);
 
-    /** Returns whether this command should end Pebby's command loop. */
+    /**
+     * Returns whether this command should end Pebby's command loop.
+     */
     public boolean isExit() {
         return false;
     }
 
-    /** Saves the current tasks and converts a save failure into a UI warning. */
+    /**
+     * Saves the current tasks and converts a save failure into a UI warning.
+     */
     protected String saveTasks(TaskList tasks, Storage storage) {
         try {
             storage.save(tasks.asList());

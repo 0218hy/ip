@@ -5,16 +5,19 @@ import pebby.task.Task;
 import pebby.task.TaskList;
 import pebby.ui.Ui;
 
-/** Deletes the task identified by a user-supplied one-based task number. */
+/**
+ * Deletes the task identified by a user-supplied one-based task number.
+ */
 public class DeleteCommand extends Command {
     private final String argument;
 
-    /** Creates a delete command using the text after the {@code delete} keyword. */
+    /**
+     * Creates a delete command using the text after the {@code delete} keyword.
+     */
     public DeleteCommand(String argument) {
         this.argument = argument;
     }
 
-    /** Validates the task number, deletes the task, saves the list, and shows the result. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         try {

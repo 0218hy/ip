@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-/** Tests task state changes and their user-visible representations. */
 class TaskTest {
 
     @Test

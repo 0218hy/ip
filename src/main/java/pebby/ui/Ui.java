@@ -14,27 +14,37 @@ public class Ui {
     private static final String SEPARATOR = "____________________________________________________________";
     private final Scanner scanner;
 
-    /** Creates a UI that reads commands from standard input. */
+    /**
+     * Creates a UI that reads commands from standard input.
+     */
     public Ui() {
         this(new Scanner(System.in));
     }
 
-    /** Creates a UI that reads commands from the given scanner. */
+    /**
+     * Creates a UI that reads commands from the given scanner.
+     */
     public Ui(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    /** Returns whether another command is available from the user. */
+    /**
+     * Returns whether another command is available from the user.
+     */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
     }
 
-    /** Reads the next command entered by the user. */
+    /**
+     * Reads the next command entered by the user.
+     */
     public String readCommand() {
         return scanner.nextLine();
     }
 
-    /** Displays Pebby's welcome banner. */
+    /**
+     * Displays Pebby's welcome banner.
+     */
     public void showWelcome() {
         String banner = " ____       _     _          \n"
                 + "|  _ \\  ___| |__ | |__  _   _\n"
@@ -49,22 +59,30 @@ public class Ui {
         showSeparator();
     }
 
-    /** Displays the separator that divides each interaction. */
+    /**
+     * Displays the separator that divides each interaction.
+     */
     public void showSeparator() {
         System.out.println(SEPARATOR);
     }
 
-    /** Displays text without adding a newline. */
+    /**
+     * Displays text without adding a newline.
+     */
     public void show(String message) {
         System.out.print(message);
     }
 
-    /** Displays text followed by a newline. */
+    /**
+     * Displays text followed by a newline.
+     */
     public void showLine(String message) {
         System.out.println(message);
     }
 
-    /** Displays Pebby's closing message. */
+    /**
+     * Displays Pebby's closing message.
+     */
     public void showGoodbye() {
         showSeparator();
         System.out.println("Bye Bye!");

@@ -15,19 +15,25 @@ import pebby.task.Event;
 import pebby.task.Task;
 import pebby.task.Todo;
 
-/** Saves Pebby's tasks to, and restores them from, a local text file. */
+/**
+ * Saves Pebby's tasks to, and restores them from, a local text file.
+ */
 public class Storage {
     /** The default relative path used to store Pebby's saved tasks. */
     public static final Path DEFAULT_FILE_PATH = Path.of("data", "pebby.txt");
     private static final String FIELD_SEPARATOR = " | ";
     private final Path filePath;
 
-    /** Uses Pebby's default data file, or a supplied path for automated tests. */
+    /**
+     * Creates storage using Pebby's default data file or a test-supplied path.
+     */
     public Storage() {
         this(Path.of(System.getProperty("pebby.storage.path", DEFAULT_FILE_PATH.toString())));
     }
 
-    /** Creates storage using the given file path. */
+    /**
+     * Creates storage using the given file path.
+     */
     public Storage(Path filePath) {
         this.filePath = filePath;
     }
@@ -56,7 +62,9 @@ public class Storage {
         return new LoadResult(tasks, skippedRecords);
     }
 
-    /** Writes all tasks atomically when the file system supports atomic moves. */
+    /**
+     * Writes all tasks atomically when the file system supports atomic moves.
+     */
     public void save(List<Task> tasks) throws IOException {
         Path absolutePath = filePath.toAbsolutePath();
         Path parent = absolutePath.getParent();
@@ -151,7 +159,9 @@ public class Storage {
         }
     }
 
-    /** The tasks recovered at startup and the number of damaged records ignored. */
+    /**
+     * Holds the tasks recovered at startup and the number of damaged records ignored.
+     */
     public static class LoadResult {
         /** The valid tasks recovered from the data file. */
         public final List<Task> tasks;

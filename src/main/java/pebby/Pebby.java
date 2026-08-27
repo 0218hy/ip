@@ -17,36 +17,34 @@ import pebby.task.Task;
 import pebby.task.TaskList;
 import pebby.ui.Ui;
 
-/** A command-line task chatbot that keeps tasks in a local data file. */
+/**
+ * A command-line task chatbot that keeps tasks in a local data file.
+ */
 public class Pebby {
-    /** Holds the tasks managed during the current Pebby session. */
     private static TaskList tasks = new TaskList();
-    /** Persists the current task list between Pebby sessions. */
     private static final Storage storage = new Storage();
 
-//    No longer usse pure Task
-//    public static String addTask(String description) {
-//        Task newTask = new Task(description);
-//        tasks.add(newTask);
-//        taskCount++;
-//        return "added: " + newTask.description + '\n';
-//    }
-
-    /** Marks the task at the supplied zero-based index as complete and saves the change. */
+    /**
+     * Marks the task at the specified zero-based index as complete and saves the change.
+     */
     public static String markTask(int taskNo) {
         Task task = tasks.markAsDone(taskNo);
         String output = "Nice! I've marked this task as done: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
-    /** Marks the task at the supplied zero-based index as incomplete and saves the change. */
+    /**
+     * Marks the task at the specified zero-based index as incomplete and saves the change.
+     */
     public static String unmarkTask(int taskNo) {
         Task task = tasks.markAsNotDone(taskNo);
         String output = "OK, I've marked this task as not done yet: \n";
         return output + "  " + task.toString() + saveTasks();
     }
 
-    /** Finds and displays every deadline that occurs on the date supplied by the user. */
+    /**
+     * Finds every deadline that occurs on the date supplied by the user.
+     */
     public static String handleFind(String dateText) {
         try {
             if (dateText.isBlank()) {
@@ -73,7 +71,9 @@ public class Pebby {
         }
     }
 
-    /** Saves the current list and turns an I/O failure into a helpful UI message. */
+    /**
+     * Saves the current list and converts an I/O failure into a helpful UI message.
+     */
     private static String saveTasks() {
         try {
             storage.save(tasks.asList());
@@ -84,7 +84,9 @@ public class Pebby {
         }
     }
 
-    /** Loads prior tasks without allowing a missing or damaged file to stop Pebby. */
+    /**
+     * Loads prior tasks without allowing a missing or damaged file to stop Pebby.
+     */
     private static String loadTasks() {
         try {
             Storage.LoadResult result = storage.load();
@@ -99,12 +101,15 @@ public class Pebby {
         }
     }
 
-    /** Validates the 1-based task number used by mark, unmark, and delete commands. */
+    /**
+     * Converts a valid one-based task number into a zero-based index.
+     */
     private static int taskIndexFrom(String argument) {
         try {
             int taskNumber = Integer.parseInt(argument);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                throw new IllegalArgumentException("Please choose a task number from 1 to " + tasks.size() + ".");
+                throw new IllegalArgumentException(
+                        "Please choose a task number from 1 to " + tasks.size() + ".");
             }
             return taskNumber - 1;
         } catch (NumberFormatException exception) {
@@ -112,7 +117,11 @@ public class Pebby {
         }
     }
 
-    /** Starts Pebby, processes commands until exit, and displays the farewell message. */
+    /**
+     * Starts Pebby and processes commands until the user exits.
+     *
+     * @param args Command-line arguments, which Pebby does not use.
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         String loadMessage = loadTasks();
@@ -122,7 +131,6 @@ public class Pebby {
             ui.showSeparator();
         }
 
-        // Getting user input
         boolean isExit = false;
         while (ui.hasNextCommand() && !isExit) {
             String command = ui.readCommand();

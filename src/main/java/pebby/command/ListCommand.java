@@ -4,9 +4,10 @@ import pebby.storage.Storage;
 import pebby.task.TaskList;
 import pebby.ui.Ui;
 
-/** Displays every task currently held by Pebby. */
+/**
+ * Displays every task currently held by Pebby.
+ */
 public class ListCommand extends Command {
-    /** Formats and displays the current task list. */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
         StringBuilder taskList = new StringBuilder("Here are the tasks in your list:\n");
