@@ -56,9 +56,8 @@ public class Pebby {
         return "Now you have " + tasks.size() + " tasks in the list.";
     }
 
-    public static String handleTodo(String command) {
+    public static String handleTodo(String description) {
         try {
-            String description = CommandType.TODO.argumentFrom(command);
             if (description.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description.");
             }
@@ -68,9 +67,8 @@ public class Pebby {
         }
     }
 
-    public static String handleDeadline(String command) {
+    public static String handleDeadline(String input) {
         try {
-            String input = CommandType.DEADLINE.argumentFrom(command);
             if (input.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description and deadline.");
             }
@@ -96,9 +94,8 @@ public class Pebby {
     }
 
     /** Finds and displays every deadline that occurs on the date supplied by the user. */
-    public static String handleFind(String command) {
+    public static String handleFind(String dateText) {
         try {
-            String dateText = CommandType.FIND.argumentFrom(command);
             if (dateText.isBlank()) {
                 throw new IllegalArgumentException("Please provide a date to search for.");
             }
@@ -123,9 +120,8 @@ public class Pebby {
         }
     }
 
-    public static String handleEvent(String command) {
+    public static String handleEvent(String input) {
         try {
-            String input = CommandType.EVENT.argumentFrom(command);
             if (input.isBlank()) {
                 throw new IllegalArgumentException("Please provide a description, start time, and end time.");
             }
@@ -217,7 +213,9 @@ public class Pebby {
         // Getting user input
         while (ui.hasNextCommand()) {
             String command = ui.readCommand();
-            CommandType commandType = CommandType.from(command);
+            ParsedCommand parsedCommand = Parser.parse(command);
+            CommandType commandType = parsedCommand.getType();
+            String argument = parsedCommand.getArgument();
             if (commandType == CommandType.BYE) {
                 break;
             }
@@ -229,7 +227,7 @@ public class Pebby {
                     break;
                 case MARK: {
                     try {
-                        ui.showLine(markTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(markTask(taskIndexFrom(argument)));
                     } catch (IllegalArgumentException exception) {
                         ui.showLine("Invalid mark: " + exception.getMessage());
                     }
@@ -237,31 +235,31 @@ public class Pebby {
                 }
                 case UNMARK: {
                     try {
-                        ui.showLine(unmarkTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(unmarkTask(taskIndexFrom(argument)));
                     } catch (IllegalArgumentException exception) {
                         ui.showLine("Invalid unmark: " + exception.getMessage());
                     }
                     break;
                 }
                 case TODO: {
-                    ui.showLine(handleTodo(command));
+                    ui.showLine(handleTodo(argument));
                     break;
                 }
                 case DEADLINE: {
-                    ui.showLine(handleDeadline(command));
+                    ui.showLine(handleDeadline(argument));
                     break;
                 }
                 case EVENT: {
-                    ui.showLine(handleEvent(command));
+                    ui.showLine(handleEvent(argument));
                     break;
                 }
                 case FIND: {
-                    ui.show(handleFind(command));
+                    ui.show(handleFind(argument));
                     break;
                 }
                 case DELETE: {
                     try {
-                        ui.showLine(deleteTask(taskIndexFrom(commandType.argumentFrom(command))));
+                        ui.showLine(deleteTask(taskIndexFrom(argument)));
                     } catch (IllegalArgumentException exception) {
                         ui.showLine("Invalid delete: " + exception.getMessage());
                     }
