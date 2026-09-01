@@ -37,15 +37,15 @@ public class AddCommand extends Command {
     /** Creates and adds the task represented by this command's type and argument. */
     private Task createTask(TaskList tasks) {
         switch (type) {
-        case TODO:
-            requireNotBlank(argument, "Please provide a description.");
-            return tasks.addTodo(argument);
-        case DEADLINE:
-            return addDeadline(tasks);
-        case EVENT:
-            return addEvent(tasks);
-        default:
-            throw new IllegalArgumentException("Unsupported task type.");
+            case TODO:
+                requireNotBlank(argument, "Please provide a description.");
+                return tasks.addTodo(argument);
+            case DEADLINE:
+                return addDeadline(tasks);
+            case EVENT:
+                return addEvent(tasks);
+            default:
+                throw new IllegalArgumentException("Unsupported task type.");
         }
     }
 
@@ -101,14 +101,14 @@ public class AddCommand extends Command {
     /** Returns the user-facing name of the task type for validation errors. */
     private String typeName() {
         switch (type) {
-        case TODO:
-            return "todo";
-        case DEADLINE:
-            return "deadline";
-        case EVENT:
-            return "event";
-        default:
-            return "task";
+            case TODO:
+                return "todo";
+            case DEADLINE:
+                return "deadline";
+            case EVENT:
+                return "event";
+            default:
+                return "task";
         }
     }
 }

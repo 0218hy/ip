@@ -4,11 +4,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /** Represents a task that takes place between a supplied start and end time. */
-public class Event extends Task{
+public class Event extends Task {
     protected LocalDate from;
     protected LocalDate to;
 
-    public Event(String description, String from, String to){
+    /** Creates an event using the supplied description, start date, and end date. */
+    public Event(String description, String from, String to) {
         super(description);
         this.from = LocalDate.parse(from, DateTimeFormatter.ofPattern("MMM dd yyyy"));
         this.to = LocalDate.parse(to, DateTimeFormatter.ofPattern("MMM dd yyyy"));

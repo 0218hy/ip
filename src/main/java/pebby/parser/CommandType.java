@@ -19,6 +19,9 @@ public enum CommandType {
         this.keyword = keyword;
     }
 
+    /**
+     * Returns the command type recognized at the start of the supplied command text.
+     */
     public static CommandType from(String command) {
         if (command == null) {
             return UNKNOWN;
