@@ -20,6 +20,15 @@ public class TaskList {
     }
 
     /**
+     * Creates a task list containing the supplied tasks.
+     *
+     * @param tasks tasks to include in the new list
+     */
+    public TaskList(Task... tasks) {
+        this(List.of(tasks));
+    }
+
+    /**
      * Creates a task list containing the supplied saved tasks.
      */
     public TaskList(List<Task> tasks) {

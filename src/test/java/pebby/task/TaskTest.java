@@ -11,6 +11,16 @@ import org.junit.jupiter.api.Test;
 class TaskTest {
 
     @Test
+    void taskListConstructor_varargs_createsListContainingTasksInOrder() {
+        Todo firstTask = new Todo("read book");
+        Todo secondTask = new Todo("buy groceries");
+
+        TaskList tasks = new TaskList(firstTask, secondTask);
+
+        assertEquals(List.of(firstTask, secondTask), tasks.asList());
+    }
+
+    @Test
     void constructor_newTask_initializesDescriptionAndIncompleteState() {
         Task task = new Task("read book");
 
