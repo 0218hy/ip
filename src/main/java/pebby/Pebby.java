@@ -24,6 +24,16 @@ public class Pebby {
     private static final Storage storage = new Storage();
 
     /**
+     * Generates a response for the user's chat message.
+     *
+     * @param input the message entered by the user
+     * @return Pebby's response
+     */
+    public String getResponse(String input) {
+        return "Pebby heard: " + input;
+    }
+
+    /**
      * Marks the task at the specified zero-based index as complete and saves the change.
      */
     public static String markTask(int taskNo) {
