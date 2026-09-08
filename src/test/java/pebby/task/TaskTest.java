@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import pebby.parser.CommandType;
+
 class TaskTest {
 
     @Test
