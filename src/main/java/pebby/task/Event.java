@@ -5,8 +5,8 @@ import java.time.format.DateTimeFormatter;
 
 /** Represents a task that takes place between a supplied start and end time. */
 public class Event extends Task {
-    protected LocalDate from;
-    protected LocalDate to;
+    private final LocalDate from;
+    private final LocalDate to;
 
     /** Creates an event using the supplied description, start date, and end date. */
     public Event(String description, String from, String to) {
@@ -27,6 +27,6 @@ public class Event extends Task {
 
     @Override
     public String toString() {
-        return "[E] " + super.toString() + " (from: " + this.from + " to: " + this.to + ")";
+        return "[E] " + super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }
