@@ -4,8 +4,8 @@ package pebby.task;
  * Represents the shared completion state and description of a task.
  */
 public class Task {
-    protected String description;
-    protected boolean isDone;
+    private final String description;
+    private boolean isDone;
 
     /**
      * Creates an incomplete task with the supplied description.
@@ -19,14 +19,14 @@ public class Task {
      * Marks this task as complete.
      */
     public void markAsDone() {
-        this.isDone = true;
+        isDone = true;
     }
 
     /**
      * Marks this task as incomplete.
      */
     public void markAsNotDone() {
-        this.isDone = false;
+        isDone = false;
     }
 
     /**
@@ -59,6 +59,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return "[" + this.getStatusIcon() + "] " + this.description;
+        return "[" + getStatusIcon() + "] " + description;
     }
 }
