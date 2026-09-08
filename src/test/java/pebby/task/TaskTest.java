@@ -94,11 +94,11 @@ class TaskTest {
     }
 
     @Test
-    void event_validDates_formatsDatesAndRetainsThemForStorage() {
-        Event event = new Event("project meeting", "Dec 02 2019", "Dec 03 2019");
+    void findTasks_emptyKeyword_returnsEveryTaskInTaskListOrder() {
+        TaskList tasks = new TaskList();
+        Todo firstTask = tasks.addTodo("read book");
+        Todo secondTask = tasks.addTodo("buy groceries");
 
-        assertEquals("2019-12-02", event.getFrom());
-        assertEquals("2019-12-03", event.getTo());
-        assertEquals("[E] [ ] project meeting (from: 2019-12-02 to: 2019-12-03)", event.toString());
+        assertEquals(List.of(firstTask, secondTask), tasks.findTasks(""));
     }
 }
