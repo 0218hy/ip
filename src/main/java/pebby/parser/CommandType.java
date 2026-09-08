@@ -40,7 +40,16 @@ public enum CommandType {
         return UNKNOWN;
     }
 
+    /**
+     * Returns the text after this recognized command's keyword.
+     *
+     * @param command a command beginning with this command type's keyword
+     * @return the command argument without surrounding whitespace
+     */
     public String argumentFrom(String command) {
-        return command.trim().substring(keyword.length()).trim();
+        String trimmedCommand = command.trim();
+        assert this != UNKNOWN : "Only recognized command types have arguments.";
+        assert trimmedCommand.startsWith(keyword) : "A command argument must follow its recognized keyword.";
+        return trimmedCommand.substring(keyword.length()).trim();
     }
 }
