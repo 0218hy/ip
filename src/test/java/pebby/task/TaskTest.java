@@ -90,4 +90,13 @@ class TaskTest {
 
         assertTrue(tasks.findTasks("lecture").isEmpty());
     }
+
+    @Test
+    void event_validDates_formatsDatesAndRetainsThemForStorage() {
+        Event event = new Event("project meeting", "Dec 02 2019", "Dec 03 2019");
+
+        assertEquals("2019-12-02", event.getFrom());
+        assertEquals("2019-12-03", event.getTo());
+        assertEquals("[E] [ ] project meeting (from: 2019-12-02 to: 2019-12-03)", event.toString());
+    }
 }
