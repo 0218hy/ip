@@ -22,11 +22,13 @@ Pebby displays the date in a more readable format:
 [D] [ ] return book (by: Dec 02 2019)
 ```
 
-## Finding deadlines on a date
+## Viewing a schedule for a date
 
-Use `find yyyy-MM-dd` to show all deadlines occurring on a particular date.
+Use `schedule yyyy-MM-dd` to show deadlines due on a date and events that occur on that date.
+Events lasting multiple days appear on every date from their start through their end. Incomplete
+tasks are shown before completed tasks.
 
-Example: `find 2019-12-02`
+Example: `schedule 2019-12-02`
 
 ## Feature ABC
 

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -98,5 +99,31 @@ class TaskTest {
         Todo secondTask = tasks.addTodo("buy groceries");
 
         assertEquals(List.of(firstTask, secondTask), tasks.findTasks(""));
+    }
+
+    @Test
+    void getScheduleFor_dateIncludesDeadlinesAndEvents_thenListsIncompleteTasksFirst() {
+        TaskList tasks = new TaskList();
+        Deadline completedDeadline = tasks.addDeadline("submit draft", "2019-12-02");
+        completedDeadline.markAsDone();
+        Event spanningEvent = tasks.addEvent("project meeting", "Dec 01 2019", "Dec 03 2019");
+        Deadline incompleteDeadline = tasks.addDeadline("return book", "2019-12-02");
+        tasks.addTodo("read book");
+        tasks.addEvent("other event", "Dec 04 2019", "Dec 04 2019");
+
+        List<Task> scheduledTasks = tasks.getScheduleFor(LocalDate.of(2019, 12, 2));
+
+        assertEquals(List.of(spanningEvent, incompleteDeadline, completedDeadline), scheduledTasks);
+    }
+
+    @Test
+    void eventIsOn_dateWithinRange_returnsTrue() {
+        Event event = new Event("project meeting", "Dec 01 2019", "Dec 03 2019");
+
+        assertTrue(event.isOn(LocalDate.of(2019, 12, 1)));
+        assertTrue(event.isOn(LocalDate.of(2019, 12, 2)));
+        assertTrue(event.isOn(LocalDate.of(2019, 12, 3)));
+        assertFalse(event.isOn(LocalDate.of(2019, 11, 30)));
+        assertFalse(event.isOn(LocalDate.of(2019, 12, 4)));
     }
 }

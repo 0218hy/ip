@@ -8,6 +8,7 @@ import pebby.command.Command;
 import pebby.command.DeleteCommand;
 import pebby.command.ExitCommand;
 import pebby.command.ListCommand;
+import pebby.command.ScheduleCommand;
 import pebby.parser.CommandType;
 import pebby.parser.ParsedCommand;
 import pebby.parser.Parser;
@@ -183,6 +184,10 @@ public class Pebby {
                 }
                 case FIND: {
                     ui.show(handleFind(argument));
+                    break;
+                }
+                case SCHEDULE: {
+                    new ScheduleCommand(argument).execute(tasks, ui, storage);
                     break;
                 }
                 case DELETE: {

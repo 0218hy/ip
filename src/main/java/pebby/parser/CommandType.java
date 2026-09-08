@@ -9,6 +9,7 @@ public enum CommandType {
     DEADLINE("deadline"),
     EVENT("event"),
     FIND("find"),
+    SCHEDULE("schedule"),
     DELETE("delete"),
     BYE("bye"),
     UNKNOWN("");

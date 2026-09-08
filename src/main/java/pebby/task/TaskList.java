@@ -1,6 +1,8 @@
 package pebby.task;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -101,6 +103,29 @@ public class TaskList {
         return tasks.stream()
                 .filter(task -> task.getDescription().contains(keyword))
                 .toList();
+    }
+
+    /**
+     * Returns dated tasks that occur on the specified date, with incomplete tasks first.
+     */
+    public List<Task> getScheduleFor(LocalDate date) {
+        return tasks.stream()
+                .filter(task -> isScheduledOn(task, date))
+                .sorted(Comparator.comparing(Task::isDone))
+                .toList();
+    }
+
+    /** Returns whether a dated task occurs on the specified date. */
+    private boolean isScheduledOn(Task task, LocalDate date) {
+        if (task instanceof Deadline) {
+            Deadline deadline = (Deadline) task;
+            return deadline.isOn(date);
+        }
+        if (task instanceof Event) {
+            Event event = (Event) task;
+            return event.isOn(date);
+        }
+        return false;
     }
 
     /**

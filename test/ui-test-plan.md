@@ -372,3 +372,65 @@ ____________________________________________________________
 Bye Bye!
 ____________________________________________________________
 ```
+
+## Test Case: View a schedule for a date
+
+### Aim
+Verify that a schedule includes events spanning the requested date and deadlines due that day, with incomplete tasks before completed tasks.
+
+### Command
+```sh
+rm -f /private/tmp/pebby-ui-schedule.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-schedule.txt -cp out/production/ip pebby.Pebby
+```
+
+### Input
+```text
+event project meeting /from Dec 01 2019 /to Dec 03 2019
+deadline return book /by 2019-12-02
+deadline submit draft /by 2019-12-02
+mark 3
+schedule 2019-12-02
+bye
+```
+
+### Expected Output
+```text
+____________________________________________________________
+ ____       _     _          
+|  _ \  ___| |__ | |__  _   _
+| |_) |/ _ \ '_ \| '_ \| | | |
+|  __/|  __/ |_) | |_) | |_| |
+|_|    \___|_.__/|_.__/ \__, |
+                         |___/
+Hello! I'm Pebby.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task: 
+  [E] [ ] project meeting (from: 2019-12-01 to: 2019-12-03)
+Now you have 1 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task: 
+  [D] [ ] return book (by: Dec 02 2019)
+Now you have 2 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Got it. I've added this task: 
+  [D] [ ] submit draft (by: Dec 02 2019)
+Now you have 3 tasks in the list.
+____________________________________________________________
+____________________________________________________________
+Nice! I've marked this task as done: 
+  [D] [X] submit draft (by: Dec 02 2019)
+____________________________________________________________
+____________________________________________________________
+Schedule for 2019-12-02:
+1. [E] [ ] project meeting (from: 2019-12-01 to: 2019-12-03)
+2. [D] [ ] return book (by: Dec 02 2019)
+3. [D] [X] submit draft (by: Dec 02 2019)
+____________________________________________________________
+____________________________________________________________
+Bye Bye!
+____________________________________________________________
+```

@@ -25,6 +25,13 @@ public class Event extends Task {
         return to.toString();
     }
 
+    /**
+     * Returns whether this event occurs on the specified date, including both endpoints.
+     */
+    public boolean isOn(LocalDate date) {
+        return !date.isBefore(from) && !date.isAfter(to);
+    }
+
     @Override
     public String toString() {
         return "[E] " + super.toString() + " (from: " + from + " to: " + to + ")";
