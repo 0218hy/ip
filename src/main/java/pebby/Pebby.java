@@ -112,7 +112,10 @@ public class Pebby {
                 throw new IllegalArgumentException(
                         "Please choose a task number from 1 to " + tasks.size() + ".");
             }
-            return taskNumber - 1;
+            int taskIndex = taskNumber - 1;
+            assert taskIndex >= 0 && taskIndex < tasks.size()
+                    : "A validated task number must produce a valid zero-based index.";
+            return taskIndex;
         } catch (NumberFormatException exception) {
             throw new IllegalArgumentException("Please provide a whole task number.");
         }
