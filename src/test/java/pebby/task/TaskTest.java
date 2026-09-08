@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import pebby.parser.CommandType;
+
 class TaskTest {
 
     @Test
@@ -89,5 +91,28 @@ class TaskTest {
         tasks.addTodo("read book");
 
         assertTrue(tasks.findTasks("lecture").isEmpty());
+    }
+
+    @Test
+    void findTasks_emptyKeyword_returnsEveryTaskInTaskListOrder() {
+        TaskList tasks = new TaskList();
+        Todo firstTask = tasks.addTodo("read book");
+        Todo secondTask = tasks.addTodo("buy groceries");
+
+        assertEquals(List.of(firstTask, secondTask), tasks.findTasks(""));
+    }
+
+    @Test
+    void event_validDates_formatsDatesAndRetainsThemForStorage() {
+        Event event = new Event("project meeting", "Dec 02 2019", "Dec 03 2019");
+
+        assertEquals("2019-12-02", event.getFrom());
+        assertEquals("2019-12-03", event.getTo());
+        assertEquals("[E] [ ] project meeting (from: 2019-12-02 to: 2019-12-03)", event.toString());
+    }
+
+    @Test
+    void argumentFrom_recognizedCommand_returnsTextAfterKeyword() {
+        assertEquals("read book", CommandType.TODO.argumentFrom("todo read book"));
     }
 }

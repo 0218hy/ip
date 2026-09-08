@@ -68,9 +68,8 @@ public class Storage {
     public void save(List<Task> tasks) throws IOException {
         Path absolutePath = filePath.toAbsolutePath();
         Path parent = absolutePath.getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
+        assert parent != null : "An absolute storage file path must have a parent directory.";
+        Files.createDirectories(parent);
 
         List<String> records = new ArrayList<>();
         for (Task task : tasks) {
