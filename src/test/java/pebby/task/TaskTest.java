@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import pebby.parser.CommandType;
+
 class TaskTest {
 
     @Test
@@ -89,5 +91,10 @@ class TaskTest {
         tasks.addTodo("read book");
 
         assertTrue(tasks.findTasks("lecture").isEmpty());
+    }
+
+    @Test
+    void argumentFrom_recognizedCommand_returnsTextAfterKeyword() {
+        assertEquals("read book", CommandType.TODO.argumentFrom("todo read book"));
     }
 }
