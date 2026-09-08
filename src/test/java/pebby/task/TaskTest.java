@@ -90,4 +90,13 @@ class TaskTest {
 
         assertTrue(tasks.findTasks("lecture").isEmpty());
     }
+
+    @Test
+    void findTasks_emptyKeyword_returnsEveryTaskInTaskListOrder() {
+        TaskList tasks = new TaskList();
+        Todo firstTask = tasks.addTodo("read book");
+        Todo secondTask = tasks.addTodo("buy groceries");
+
+        assertEquals(List.of(firstTask, secondTask), tasks.findTasks(""));
+    }
 }
