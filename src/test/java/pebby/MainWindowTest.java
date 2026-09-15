@@ -1,6 +1,8 @@
 package pebby;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,5 +40,17 @@ class MainWindowTest {
         String response = "Here are the tasks in your list:";
 
         assertEquals(response, MainWindow.addFormatGuidance(response));
+    }
+
+    @Test
+    void isExitCommand_validByeCommand_returnsTrue() {
+        assertTrue(MainWindow.isExitCommand("bye"));
+        assertTrue(MainWindow.isExitCommand(" bye "));
+    }
+
+    @Test
+    void isExitCommand_nonExitOrInvalidByeCommand_returnsFalse() {
+        assertFalse(MainWindow.isExitCommand("list"));
+        assertFalse(MainWindow.isExitCommand("bye later"));
     }
 }

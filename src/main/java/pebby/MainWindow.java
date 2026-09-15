@@ -1,5 +1,6 @@
 package pebby;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -7,6 +8,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
+import pebby.parser.CommandType;
+import pebby.parser.ParsedCommand;
+import pebby.parser.Parser;
+
 /**
  * Controller for the main GUI.
  */
@@ -52,6 +58,15 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getPebbyDialog(addFormatGuidance(response), pebbyImage)
         );
         userInput.clear();
+        if (isExitCommand(input)) {
+            Platform.exit();
+        }
+    }
+
+    /** Returns whether the supplied input is Pebby's valid command to close the window. */
+    static boolean isExitCommand(String input) {
+        ParsedCommand parsedCommand = Parser.parse(input);
+        return parsedCommand.getType() == CommandType.BYE && !parsedCommand.hasError();
     }
 
     /**
