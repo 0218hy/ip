@@ -153,4 +153,69 @@ class TaskTest {
 
         assertEquals("2026-06-15", deadline.getBy());
     }
+
+    @Test
+    void deadline_parseDate_acceptsIsoAndCaseInsensitiveWrittenDates() {
+        assertEquals(LocalDate.of(2026, 6, 15), Deadline.parseDate("2026-06-15"));
+        assertEquals(LocalDate.of(2026, 6, 15), Deadline.parseDate("15 jUnE 2026"));
+    }
+
+    @Test
+    void parseDate_invalidDates_showsHelpfulException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> Deadline.parseDate("2026-02-29"));
+
+        assertTrue(exception.getMessage().contains("yyyy-MM-dd or d MMMM yyyy"));
+    }
+
+    @Test
+    void task_constructorInvalidDescriptions_throwsSpecificExceptions() {
+        IllegalArgumentException blankDescriptionException = assertThrows(
+                IllegalArgumentException.class, () -> new Todo(" "));
+        IllegalArgumentException paddedDescriptionException = assertThrows(
+                IllegalArgumentException.class, () -> new Todo(" read"));
+        IllegalArgumentException controlCharacterException = assertThrows(
+                IllegalArgumentException.class, () -> new Todo("read\nbook"));
+
+        assertEquals("Please provide a description.", blankDescriptionException.getMessage());
+        assertEquals("Task descriptions cannot start or end with spaces.",
+                paddedDescriptionException.getMessage());
+        assertEquals("Task descriptions cannot contain control characters.",
+                controlCharacterException.getMessage());
+    }
+
+    @Test
+    void taskHasSameDetails_sameTypeAndDetails_returnsTrueRegardlessOfStatus() {
+        Todo firstTodo = new Todo("read book");
+        Todo secondTodo = new Todo("read book");
+        secondTodo.markAsDone();
+
+        assertTrue(firstTodo.hasSameDetails(secondTodo));
+        assertFalse(firstTodo.hasSameDetails(new Deadline("read book", "2026-06-15")));
+        assertFalse(firstTodo.hasSameDetails(null));
+    }
+
+    @Test
+    void taskListAsList_returnsUnmodifiableCopyAndDeleteReturnsRemovedTask() {
+        TaskList tasks = new TaskList();
+        Todo todo = tasks.addTodo("read book");
+        List<Task> snapshot = tasks.asList();
+
+        assertThrows(UnsupportedOperationException.class, () -> snapshot.add(new Todo("buy milk")));
+        assertEquals(todo, tasks.delete(0));
+        assertEquals(0, tasks.size());
+        assertEquals(List.of(todo), snapshot);
+    }
+
+    @Test
+    void taskList_duplicateDetailsWithDifferentDates_addsDistinctDatedTasks() {
+        TaskList tasks = new TaskList();
+
+        tasks.addDeadline("return book", "2026-06-15");
+        tasks.addDeadline("return book", "2026-06-16");
+        tasks.addEvent("meeting", "2026-06-15", "2026-06-16");
+        tasks.addEvent("meeting", "2026-06-16", "2026-06-17");
+
+        assertEquals(4, tasks.size());
+    }
 }
