@@ -36,7 +36,7 @@ class CommandTest {
                         + "Got it. I've added this task: \n"
                         + "  [E] [ ] meeting (from: 2026-06-15 to: 2026-06-16)\n"
                         + "Now you have 3 tasks in the list.\n",
-                response.toString());
+                normalizeLineEndings(response.toString()));
     }
 
     @Test
@@ -59,7 +59,7 @@ class CommandTest {
 
         assertEquals("Here are the tasks in your list:\n"
                         + "Here are the tasks in your list:\n1. [T] [ ] read book\n",
-                response.toString());
+                normalizeLineEndings(response.toString()));
     }
 
     @Test
@@ -79,7 +79,7 @@ class CommandTest {
                         + "Now you have 1 tasks in the list.\n"
                         + "Invalid delete: Please provide a whole task number.\n"
                         + "Invalid delete: Please choose a task number from 1 to 1.\n",
-                response.toString());
+                normalizeLineEndings(response.toString()));
     }
 
     @Test
@@ -96,7 +96,7 @@ class CommandTest {
                         + "No tasks scheduled for 2026-06-16.\n"
                         + "Invalid schedule: Please use a valid date as yyyy-MM-dd or d MMMM yyyy, "
                         + "for example 2019-12-02 or 15 June 2026.\n",
-                response.toString());
+                normalizeLineEndings(response.toString()));
     }
 
     @Test
@@ -114,7 +114,7 @@ class CommandTest {
 
         execute(new AddCommand(type, argument), new TaskList(), response);
 
-        assertEquals(expectedResponse, response.toString());
+        assertEquals(expectedResponse, normalizeLineEndings(response.toString()));
     }
 
     private void execute(Command command, TaskList tasks, StringBuilder response) {
@@ -123,5 +123,12 @@ class CommandTest {
 
     private Storage storage() {
         return new Storage(temporaryDirectory.resolve("pebby.txt"));
+    }
+
+    /**
+     * Converts platform-specific line separators to the newline convention used by expected test strings.
+     */
+    private String normalizeLineEndings(String response) {
+        return response.replace("\r\n", "\n");
     }
 }
