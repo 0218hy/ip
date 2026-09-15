@@ -8,7 +8,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-
 import pebby.parser.CommandType;
 import pebby.parser.ParsedCommand;
 import pebby.parser.Parser;
