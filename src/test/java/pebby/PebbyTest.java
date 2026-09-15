@@ -32,7 +32,35 @@ class PebbyTest {
 
         assertTrue(response.contains("ADD TASKS"));
         assertTrue(response.contains("• todo <task description>"));
-        assertTrue(response.contains("event <task description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>"));
-        assertTrue(response.contains("schedule <yyyy-MM-dd>"));
+        assertTrue(response.contains("event <task description> /from <yyyy-MM-dd or d MMMM yyyy>"));
+        assertTrue(response.contains("schedule <yyyy-MM-dd or d MMMM yyyy>"));
+    }
+
+    @Test
+    void getResponse_malformedCommands_returnsHelpfulErrors() {
+        Pebby pebby = new Pebby();
+
+        assertTrue(pebby.getResponse(" todo trimmed input ").contains("[T] [ ] trimmed input"));
+        assertTrue(pebby.getResponse("todo  read book").contains("Use single spaces"));
+        assertTrue(pebby.getResponse("list extra").contains("does not take an argument"));
+    }
+
+    @Test
+    void getResponse_invalidEventRangeAndDuplicate_returnsHelpfulErrors() {
+        Pebby pebby = new Pebby();
+
+        assertTrue(pebby.getResponse("event meeting /from 2019-12-03 /to 2019-12-03")
+                .contains("start date must be before"));
+        pebby.getResponse("todo unique task");
+        assertTrue(pebby.getResponse("todo unique task").contains("identical task"));
+    }
+
+    @Test
+    void getResponse_writtenDate_addsAndSchedulesTask() {
+        Pebby pebby = new Pebby();
+
+        assertTrue(pebby.getResponse("deadline return book /by 15 June 2026")
+                .contains("by: Jun 15 2026"));
+        assertTrue(pebby.getResponse("schedule 15 June 2026").contains("return book"));
     }
 }

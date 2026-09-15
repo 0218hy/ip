@@ -40,13 +40,18 @@ public class Pebby {
     public String getResponse(String input) {
         StringBuilder response = new StringBuilder();
         Ui ui = new Ui(response);
-        ParsedCommand parsedCommand = Parser.parse(input);
-
-        if (parsedCommand.getType() == CommandType.BYE) {
-            return "Bye Bye!";
+        try {
+            ParsedCommand parsedCommand = Parser.parse(input);
+            if (parsedCommand.hasError()) {
+                return "Invalid command: " + parsedCommand.getErrorMessage();
+            }
+            if (parsedCommand.getType() == CommandType.BYE) {
+                return "Bye Bye!";
+            }
+            executeCommand(parsedCommand, ui);
+        } catch (RuntimeException exception) {
+            return "Sorry, Pebby could not process that command: " + safeMessage(exception);
         }
-
-        executeCommand(parsedCommand, ui);
         return response.toString().trim();
     }
 
@@ -97,8 +102,9 @@ public class Pebby {
         return "Here is what I can do:\n\n"
                 + "ADD TASKS\n"
                 + "• todo <task description>\n"
-                + "• deadline <task description> /by <yyyy-MM-dd>\n"
-                + "• event <task description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>\n\n"
+                + "• deadline <task description> /by <yyyy-MM-dd or d MMMM yyyy>\n"
+                + "• event <task description> /from <yyyy-MM-dd or d MMMM yyyy> "
+                + "/to <yyyy-MM-dd or d MMMM yyyy>\n\n"
                 + "MANAGE TASKS\n"
                 + "• list\n"
                 + "• mark <task number>\n"
@@ -106,7 +112,7 @@ public class Pebby {
                 + "• delete <task number>\n\n"
                 + "FIND AND PLAN\n"
                 + "• find <keyword>\n"
-                + "• schedule <yyyy-MM-dd>\n\n"
+                + "• schedule <yyyy-MM-dd or d MMMM yyyy>\n\n"
                 + "OTHER\n"
                 + "• help\n"
                 + "• bye";
@@ -168,6 +174,10 @@ public class Pebby {
      * @param ui user interface that receives the response
      */
     private static void executeCommand(ParsedCommand parsedCommand, Ui ui) {
+        if (parsedCommand.hasError()) {
+            ui.showLine("Invalid command: " + parsedCommand.getErrorMessage());
+            return;
+        }
         CommandType commandType = parsedCommand.getType();
         String argument = parsedCommand.getArgument();
 
@@ -214,6 +224,12 @@ public class Pebby {
         }
     }
 
+    /** Returns a safe explanation for an unexpected command-processing failure. */
+    private static String safeMessage(RuntimeException exception) {
+        return exception.getMessage() == null || exception.getMessage().isBlank()
+                ? "an unexpected error occurred." : exception.getMessage();
+    }
+
     /**
      * Starts Pebby and processes commands until the user exits.
      *
@@ -231,17 +247,22 @@ public class Pebby {
         boolean isExit = false;
         while (ui.hasNextCommand() && !isExit) {
             String command = ui.readCommand();
-            ParsedCommand parsedCommand = Parser.parse(command);
-            if (parsedCommand.getType() == CommandType.BYE) {
-                Command exitCommand = new ExitCommand();
-                exitCommand.execute(tasks, ui, storage);
-                isExit = exitCommand.isExit();
-                continue;
+            try {
+                ParsedCommand parsedCommand = Parser.parse(command);
+                if (parsedCommand.getType() == CommandType.BYE && !parsedCommand.hasError()) {
+                    Command exitCommand = new ExitCommand();
+                    exitCommand.execute(tasks, ui, storage);
+                    isExit = exitCommand.isExit();
+                } else {
+                    ui.showSeparator();
+                    executeCommand(parsedCommand, ui);
+                    ui.showSeparator();
+                }
+            } catch (RuntimeException exception) {
+                ui.showSeparator();
+                ui.showLine("Sorry, Pebby could not process that command: " + safeMessage(exception));
+                ui.showSeparator();
             }
-
-            ui.showSeparator();
-            executeCommand(parsedCommand, ui);
-            ui.showSeparator();
         }
         ui.showGoodbye();
     }

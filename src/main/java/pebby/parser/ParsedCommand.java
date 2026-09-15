@@ -9,13 +9,20 @@ package pebby.parser;
 public class ParsedCommand {
     private final CommandType type;
     private final String argument;
+    private final String errorMessage;
 
     /**
      * Creates a parsed command with its recognized type and remaining text.
      */
     public ParsedCommand(CommandType type, String argument) {
+        this(type, argument, "");
+    }
+
+    /** Creates a parsed command, optionally recording why its format is invalid. */
+    public ParsedCommand(CommandType type, String argument, String errorMessage) {
         this.type = type;
         this.argument = argument;
+        this.errorMessage = errorMessage;
     }
 
     /**
@@ -30,5 +37,15 @@ public class ParsedCommand {
      */
     public String getArgument() {
         return argument;
+    }
+
+    /** Returns whether the command format was invalid. */
+    public boolean hasError() {
+        return !errorMessage.isEmpty();
+    }
+
+    /** Returns the user-facing explanation of the command-format error. */
+    public String getErrorMessage() {
+        return errorMessage;
     }
 }

@@ -65,11 +65,12 @@ public class MainWindow extends AnchorPane {
             return response + "\n\nCorrect format: todo <task description>";
         }
         if (response.startsWith("Invalid deadline")) {
-            return response + "\n\nCorrect format: deadline <task description> /by <yyyy-MM-dd>";
+            return response + "\n\nCorrect format: deadline <task description> "
+                    + "/by <yyyy-MM-dd or d MMMM yyyy>";
         }
         if (response.startsWith("Invalid event")) {
-            return response + "\n\nCorrect format: event <task description> /from <yyyy-MM-dd> "
-                    + "/to <yyyy-MM-dd>";
+            return response + "\n\nCorrect format: event <task description> "
+                    + "/from <yyyy-MM-dd or d MMMM yyyy> /to <yyyy-MM-dd or d MMMM yyyy>";
         }
         if (response.startsWith("Invalid mark")) {
             return response + "\n\nCorrect format: mark <task number>";
@@ -84,7 +85,7 @@ public class MainWindow extends AnchorPane {
             return response + "\n\nCorrect format: find <keyword>";
         }
         if (response.startsWith("Invalid schedule")) {
-            return response + "\n\nCorrect format: schedule <yyyy-MM-dd>";
+            return response + "\n\nCorrect format: schedule <yyyy-MM-dd or d MMMM yyyy>";
         }
         if (response.startsWith("Hmmm")) {
             return response + "\n\nType help to see the available commands.";

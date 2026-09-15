@@ -11,6 +11,7 @@ public class Task {
      * Creates an incomplete task with the supplied description.
      */
     public Task(String description) {
+        validateDescription(description);
         this.description = description;
         this.isDone = false;
     }
@@ -55,6 +56,25 @@ public class Task {
      */
     public boolean isDone() {
         return isDone;
+    }
+
+    /** Returns whether this task has the same user-visible details as another task. */
+    public boolean hasSameDetails(Task other) {
+        return other != null && getClass().equals(other.getClass())
+                && description.equals(other.description);
+    }
+
+    /** Rejects descriptions that cannot be safely represented as one task. */
+    private void validateDescription(String description) {
+        if (description == null || description.isBlank()) {
+            throw new IllegalArgumentException("Please provide a description.");
+        }
+        if (!description.equals(description.trim())) {
+            throw new IllegalArgumentException("Task descriptions cannot start or end with spaces.");
+        }
+        if (description.chars().anyMatch(Character::isISOControl)) {
+            throw new IllegalArgumentException("Task descriptions cannot contain control characters.");
+        }
     }
 
     @Override

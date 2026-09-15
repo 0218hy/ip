@@ -54,7 +54,11 @@ public class Storage {
         int skippedRecords = 0;
         for (String line : Files.readAllLines(filePath, StandardCharsets.UTF_8)) {
             try {
-                tasks.add(parseTask(line));
+                Task task = parseTask(line);
+                if (tasks.stream().anyMatch(existingTask -> existingTask.hasSameDetails(task))) {
+                    throw new IllegalArgumentException("Duplicate saved task");
+                }
+                tasks.add(task);
             } catch (IllegalArgumentException exception) {
                 skippedRecords++;
             }

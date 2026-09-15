@@ -2,13 +2,20 @@ package pebby.task;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
 
 /** Represents a task that must be completed by a supplied deadline. */
 public class Deadline extends Task {
     private static final DateTimeFormatter OUTPUT_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd uuuu", Locale.ENGLISH);
+    private static final DateTimeFormatter WRITTEN_DATE_FORMAT = new DateTimeFormatterBuilder()
+            .parseCaseInsensitive()
+            .appendPattern("d MMMM uuuu")
+            .toFormatter(Locale.ENGLISH)
+            .withResolverStyle(ResolverStyle.STRICT);
     private final LocalDate by;
 
     public Deadline(String description, String by) {
@@ -22,17 +29,29 @@ public class Deadline extends Task {
     }
 
     /**
-     * Converts a date argument in {@code yyyy-MM-dd} format into a LocalDate.
+     * Converts an ISO or written English date argument into a LocalDate.
      *
-     * @throws IllegalArgumentException if the argument is not a real date in the expected format
+     * @throws IllegalArgumentException if the argument is not a real date in an accepted format
      */
     public static LocalDate parseDate(String dateText) {
-        try {
-            return LocalDate.parse(dateText);
-        } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException(
-                    "Please use a valid date in yyyy-MM-dd format, for example 2019-12-02.");
+        if (dateText == null || dateText.isBlank()) {
+            throw invalidDateException();
         }
+        try {
+            return LocalDate.parse(dateText.trim());
+        } catch (DateTimeParseException exception) {
+            try {
+                return LocalDate.parse(dateText.trim(), WRITTEN_DATE_FORMAT);
+            } catch (DateTimeParseException writtenDateException) {
+                throw invalidDateException();
+            }
+        }
+    }
+
+    /** Returns the shared user-facing explanation for an invalid date. */
+    private static IllegalArgumentException invalidDateException() {
+        return new IllegalArgumentException("Please use a valid date as yyyy-MM-dd or d MMMM yyyy, "
+                + "for example 2019-12-02 or 15 June 2026.");
     }
 
     /** Returns the deadline in ISO format so it can be saved and loaded reliably. */
@@ -43,6 +62,11 @@ public class Deadline extends Task {
     /** Returns whether this deadline falls on the specified date. */
     public boolean isOn(LocalDate date) {
         return by.equals(date);
+    }
+
+    @Override
+    public boolean hasSameDetails(Task other) {
+        return super.hasSameDetails(other) && by.equals(((Deadline) other).by);
     }
 
     @Override

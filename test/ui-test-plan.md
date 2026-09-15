@@ -131,7 +131,7 @@ rm -f /private/tmp/pebby-ui-deadline.txt && java -Dpebby.storage.path=/private/t
 
 ### Input
 ```text
-deadline return book /by 2019-12-02
+deadline return book /by 15 June 2019
 bye
 ```
 
@@ -149,7 +149,7 @@ What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
 Got it. I've added this task: 
-  [D] [ ] return book (by: Dec 02 2019)
+  [D] [ ] return book (by: Jun 15 2019)
 Now you have 1 tasks in the list.
 ____________________________________________________________
 ____________________________________________________________
@@ -262,7 +262,47 @@ Hello! I'm Pebby.
 What can I do for you?
 ____________________________________________________________
 ____________________________________________________________
-Invalid deadline: Please use a valid date in yyyy-MM-dd format, for example 2019-12-02.
+Invalid deadline: Please use a valid date as yyyy-MM-dd or d MMMM yyyy, for example 2019-12-02 or 15 June 2026.
+____________________________________________________________
+____________________________________________________________
+Bye Bye!
+____________________________________________________________
+```
+
+## Test Case: Reject malformed commands and invalid event ranges
+
+### Aim
+Verify that malformed whitespace and an event whose start date is not before its end date report errors and Pebby continues running.
+
+### Command
+```sh
+rm -f /private/tmp/pebby-ui-invalid-command.txt && java -Dpebby.storage.path=/private/tmp/pebby-ui-invalid-command.txt -cp build/classes/java/main pebby.Pebby
+```
+
+### Input
+```text
+todo  read book
+event meeting /from 2019-12-03 /to 2019-12-03
+bye
+```
+
+### Expected Output
+```text
+____________________________________________________________
+ ____       _     _          
+|  _ \  ___| |__ | |__  _   _
+| |_) |/ _ \ '_ \| '_ \| | | |
+|  __/|  __/ |_) | |_) | |_| |
+|_|    \___|_.__/|_.__/ \__, |
+                         |___/
+Hello! I'm Pebby.
+What can I do for you?
+____________________________________________________________
+____________________________________________________________
+Invalid command: Use single spaces between command parts.
+____________________________________________________________
+____________________________________________________________
+Invalid event: The start date must be before the end date.
 ____________________________________________________________
 ____________________________________________________________
 Bye Bye!
@@ -468,8 +508,8 @@ Here is what I can do:
 
 ADD TASKS
 • todo <task description>
-• deadline <task description> /by <yyyy-MM-dd>
-• event <task description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>
+• deadline <task description> /by <yyyy-MM-dd or d MMMM yyyy>
+• event <task description> /from <yyyy-MM-dd or d MMMM yyyy> /to <yyyy-MM-dd or d MMMM yyyy>
 
 MANAGE TASKS
 • list
@@ -479,7 +519,7 @@ MANAGE TASKS
 
 FIND AND PLAN
 • find <keyword>
-• schedule <yyyy-MM-dd>
+• schedule <yyyy-MM-dd or d MMMM yyyy>
 
 OTHER
 • help

@@ -12,6 +12,9 @@ public class Event extends Task {
         super(description);
         this.from = Deadline.parseDate(from);
         this.to = Deadline.parseDate(to);
+        if (!this.from.isBefore(this.to)) {
+            throw new IllegalArgumentException("The start date must be before the end date.");
+        }
     }
 
     /** Returns the event's start time text. */
@@ -29,6 +32,12 @@ public class Event extends Task {
      */
     public boolean isOn(LocalDate date) {
         return !date.isBefore(from) && !date.isAfter(to);
+    }
+
+    @Override
+    public boolean hasSameDetails(Task other) {
+        return super.hasSameDetails(other) && from.equals(((Event) other).from)
+                && to.equals(((Event) other).to);
     }
 
     @Override

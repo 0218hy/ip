@@ -52,12 +52,9 @@ public class AddCommand extends Command {
     /** Parses this command's deadline argument and adds the resulting task. */
     private Deadline addDeadline(TaskList tasks) {
         requireNotBlank(argument, "Please provide a description and deadline.");
-        int byIndex = argument.indexOf("/by");
-        if (byIndex == -1) {
-            throw new IllegalArgumentException("Please include /by followed by a deadline.");
-        }
+        int byIndex = markerIndex("/by", "Please include exactly one /by followed by a deadline.");
         String description = argument.substring(0, byIndex).trim();
-        String by = argument.substring(byIndex + "/by".length()).trim();
+        String by = argument.substring(byIndex + " /by ".length()).trim();
         requireNotBlank(description, "Please provide a description.");
         requireNotBlank(by, "Please provide a deadline after /by.");
         return tasks.addDeadline(description, Deadline.parseDate(by).toString());
@@ -66,20 +63,14 @@ public class AddCommand extends Command {
     /** Parses this command's event argument and adds the resulting task. */
     private Event addEvent(TaskList tasks) {
         requireNotBlank(argument, "Please provide a description, start time, and end time.");
-        int fromIndex = argument.indexOf("/from");
-        int toIndex = argument.indexOf("/to");
-        if (fromIndex == -1) {
-            throw new IllegalArgumentException("Please include /from followed by a start time.");
-        }
-        if (toIndex == -1) {
-            throw new IllegalArgumentException("Please include /to followed by an end time.");
-        }
+        int fromIndex = markerIndex("/from", "Please include exactly one /from followed by a start date.");
+        int toIndex = markerIndex("/to", "Please include exactly one /to followed by an end date.");
         if (toIndex < fromIndex) {
             throw new IllegalArgumentException("Please put /from before /to.");
         }
         String description = argument.substring(0, fromIndex).trim();
-        String from = argument.substring(fromIndex + "/from".length(), toIndex).trim();
-        String to = argument.substring(toIndex + "/to".length()).trim();
+        String from = argument.substring(fromIndex + " /from ".length(), toIndex).trim();
+        String to = argument.substring(toIndex + " /to ".length()).trim();
         requireNotBlank(description, "Please provide a description.");
         requireNotBlank(from, "Please provide a start time after /from.");
         requireNotBlank(to, "Please provide an end time after /to.");
@@ -91,6 +82,28 @@ public class AddCommand extends Command {
         if (value.isBlank()) {
             throw new IllegalArgumentException(message);
         }
+    }
+
+    /** Returns the index of one correctly spaced parameter marker. */
+    private int markerIndex(String marker, String errorMessage) {
+        String spacedMarker = " " + marker + " ";
+        int markerIndex = argument.indexOf(spacedMarker);
+        if (markerIndex == -1 || markerIndex != argument.lastIndexOf(spacedMarker)
+                || countOccurrences(marker) != 1) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+        return markerIndex;
+    }
+
+    /** Counts occurrences of a parameter marker in this command's argument. */
+    private int countOccurrences(String marker) {
+        int count = 0;
+        int index = 0;
+        while ((index = argument.indexOf(marker, index)) != -1) {
+            count++;
+            index += marker.length();
+        }
+        return count;
     }
 
     /** Returns Pebby's message stating the current number of tasks. */

@@ -49,7 +49,7 @@ public class TaskList {
      */
     public Todo addTodo(String description) {
         Todo todo = new Todo(description);
-        tasks.add(todo);
+        addUniqueTask(todo);
         return todo;
     }
 
@@ -58,7 +58,7 @@ public class TaskList {
      */
     public Deadline addDeadline(String description, String by) {
         Deadline deadline = new Deadline(description, by);
-        tasks.add(deadline);
+        addUniqueTask(deadline);
         return deadline;
     }
 
@@ -67,7 +67,7 @@ public class TaskList {
      */
     public Event addEvent(String description, String from, String to) {
         Event event = new Event(description, from, to);
-        tasks.add(event);
+        addUniqueTask(event);
         return event;
     }
 
@@ -140,5 +140,13 @@ public class TaskList {
      */
     public List<Task> asList() {
         return List.copyOf(tasks);
+    }
+
+    /** Adds a task after ensuring an identical task has not already been recorded. */
+    private void addUniqueTask(Task task) {
+        if (tasks.stream().anyMatch(existingTask -> existingTask.hasSameDetails(task))) {
+            throw new IllegalArgumentException("An identical task is already in the list.");
+        }
+        tasks.add(task);
     }
 }

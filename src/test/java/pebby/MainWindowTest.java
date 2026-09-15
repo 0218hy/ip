@@ -17,7 +17,8 @@ class MainWindowTest {
 
         String guidedResponse = MainWindow.addFormatGuidance(response);
 
-        assertEquals(response + "\n\nCorrect format: deadline <task description> /by <yyyy-MM-dd>",
+        assertEquals(response + "\n\nCorrect format: deadline <task description> "
+                        + "/by <yyyy-MM-dd or d MMMM yyyy>",
                 guidedResponse);
     }
 
@@ -27,8 +28,8 @@ class MainWindowTest {
 
         String guidedResponse = MainWindow.addFormatGuidance(response);
 
-        assertEquals(response + "\n\nCorrect format: event <task description> /from <yyyy-MM-dd> "
-                + "/to <yyyy-MM-dd>",
+        assertEquals(response + "\n\nCorrect format: event <task description> "
+                + "/from <yyyy-MM-dd or d MMMM yyyy> /to <yyyy-MM-dd or d MMMM yyyy>",
                 guidedResponse);
     }
 
