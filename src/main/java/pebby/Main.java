@@ -22,6 +22,7 @@ public class Main extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
+            stage.setTitle("Pebby — Task Assistant");
             stage.setScene(scene);
             stage.setMinWidth(360);
             stage.setMinHeight(420);
