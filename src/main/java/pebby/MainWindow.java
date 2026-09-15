@@ -11,6 +11,9 @@ import javafx.scene.layout.VBox;
  * Controller for the main GUI.
  */
 public class MainWindow extends AnchorPane {
+    /** The first message Pebby shows in the graphical interface. */
+    static final String GUI_WELCOME = "Hi, I’m Pebby. I may be sleepy, but I’m here.";
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -93,6 +96,6 @@ public class MainWindow extends AnchorPane {
      * Returns the command reference shown when the graphical interface opens.
      */
     private String commandGuide() {
-        return "Hello! I'm Pebby. Type help to see what I can do.";
+        return GUI_WELCOME;
     }
 }

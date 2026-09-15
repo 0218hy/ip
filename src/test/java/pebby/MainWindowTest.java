@@ -7,6 +7,11 @@ import org.junit.jupiter.api.Test;
 class MainWindowTest {
 
     @Test
+    void guiWelcome_describesPebbyAsSleepyAndAvailable() {
+        assertEquals("Hi, I’m Pebby. I may be sleepy, but I’m here.", MainWindow.GUI_WELCOME);
+    }
+
+    @Test
     void addFormatGuidance_invalidDeadline_addsDeadlineExample() {
         String response = "Invalid deadline: Please include /by followed by a deadline.";
 
