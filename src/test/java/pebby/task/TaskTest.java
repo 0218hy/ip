@@ -106,10 +106,10 @@ class TaskTest {
         TaskList tasks = new TaskList();
         Deadline completedDeadline = tasks.addDeadline("submit draft", "2019-12-02");
         completedDeadline.markAsDone();
-        Event spanningEvent = tasks.addEvent("project meeting", "Dec 01 2019", "Dec 03 2019");
+        Event spanningEvent = tasks.addEvent("project meeting", "2019-12-01", "2019-12-03");
         Deadline incompleteDeadline = tasks.addDeadline("return book", "2019-12-02");
         tasks.addTodo("read book");
-        tasks.addEvent("other event", "Dec 04 2019", "Dec 04 2019");
+        tasks.addEvent("other event", "2019-12-04", "2019-12-04");
 
         List<Task> scheduledTasks = tasks.getScheduleFor(LocalDate.of(2019, 12, 2));
 
@@ -118,7 +118,7 @@ class TaskTest {
 
     @Test
     void eventIsOn_dateWithinRange_returnsTrue() {
-        Event event = new Event("project meeting", "Dec 01 2019", "Dec 03 2019");
+        Event event = new Event("project meeting", "2019-12-01", "2019-12-03");
 
         assertTrue(event.isOn(LocalDate.of(2019, 12, 1)));
         assertTrue(event.isOn(LocalDate.of(2019, 12, 2)));

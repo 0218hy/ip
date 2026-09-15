@@ -23,6 +23,9 @@ public class Main extends Application {
             AnchorPane ap = fxmlLoader.load();
             Scene scene = new Scene(ap);
             stage.setScene(scene);
+            stage.setMinWidth(360);
+            stage.setMinHeight(420);
+            stage.setResizable(true);
             fxmlLoader.<MainWindow>getController().setPebby(pebby);
             stage.show();
         } catch (IOException e) {

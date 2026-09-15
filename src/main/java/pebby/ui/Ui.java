@@ -13,6 +13,7 @@ import pebby.Pebby;
 public class Ui {
     private static final String SEPARATOR = "____________________________________________________________";
     private final Scanner scanner;
+    private final StringBuilder response;
 
     /**
      * Creates a UI that reads commands from standard input.
@@ -26,6 +27,17 @@ public class Ui {
      */
     public Ui(Scanner scanner) {
         this.scanner = scanner;
+        this.response = null;
+    }
+
+    /**
+     * Creates a UI that captures command output for display in the graphical interface.
+     *
+     * @param response destination for command output
+     */
+    public Ui(StringBuilder response) {
+        this.scanner = null;
+        this.response = response;
     }
 
     /**
@@ -70,14 +82,22 @@ public class Ui {
      * Displays text without adding a newline.
      */
     public void show(String message) {
-        System.out.print(message);
+        if (response == null) {
+            System.out.print(message);
+        } else {
+            response.append(message);
+        }
     }
 
     /**
      * Displays text followed by a newline.
      */
     public void showLine(String message) {
-        System.out.println(message);
+        if (response == null) {
+            System.out.println(message);
+        } else {
+            response.append(message).append(System.lineSeparator());
+        }
     }
 
     /**

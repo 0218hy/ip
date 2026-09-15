@@ -13,11 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Represents a compact message in the conversation between a user and Pebby.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -25,7 +25,7 @@ public class DialogBox extends HBox {
     @FXML
     private ImageView displayPicture;
 
-    private DialogBox(String text, Image img) {
+    private DialogBox(String text, Image image) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
             fxmlLoader.setController(this);
@@ -36,27 +36,60 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
-        displayPicture.setImage(img);
+        displayPicture.setImage(image);
+        displayPicture.setClip(new Circle(24, 24, 24));
+        dialog.maxWidthProperty().bind(widthProperty().multiply(0.78));
     }
 
     /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
+     * Styles the dialog as a Pebby response with the icon on the left.
      */
-    private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
-        Collections.reverse(tmp);
-        getChildren().setAll(tmp);
+    private void formatAsPebbyResponse(boolean isError) {
         setAlignment(Pos.TOP_LEFT);
-        dialog.getStyleClass().add("reply-label");
+        dialog.getStyleClass().add(isError ? "error-label" : "reply-label");
     }
 
-    public static DialogBox getUserDialog(String s, Image i) {
-        return new DialogBox(s, i);
+    /**
+     * Styles the dialog as a compact message sent by the user.
+     */
+    private void formatAsUserMessage() {
+        ObservableList<Node> children = FXCollections.observableArrayList(getChildren());
+        Collections.reverse(children);
+        getChildren().setAll(children);
+        displayPicture.setManaged(false);
+        displayPicture.setVisible(false);
+        setAlignment(Pos.TOP_RIGHT);
+        dialog.getStyleClass().add("user-label");
     }
 
-    public static DialogBox getPebbyDialog(String s, Image i) {
-        var db = new DialogBox(s, i);
-        db.flip();
-        return db;
+    /**
+     * Creates a right-aligned dialog that displays text sent by the user.
+     *
+     * @param text text sent by the user
+     * @param image image associated with the user
+     * @return the formatted user dialog
+     */
+    public static DialogBox getUserDialog(String text, Image image) {
+        DialogBox dialogBox = new DialogBox(text, image);
+        dialogBox.formatAsUserMessage();
+        return dialogBox;
+    }
+
+    /**
+     * Creates a left-aligned dialog that displays Pebby's response.
+     *
+     * @param text response from Pebby
+     * @param image Pebby's profile image
+     * @return the formatted Pebby dialog
+     */
+    public static DialogBox getPebbyDialog(String text, Image image) {
+        DialogBox dialogBox = new DialogBox(text, image);
+        dialogBox.formatAsPebbyResponse(isErrorMessage(text));
+        return dialogBox;
+    }
+
+    /** Returns whether a response is an input error that should be emphasized. */
+    static boolean isErrorMessage(String response) {
+        return response.startsWith("Invalid") || response.startsWith("Unknown") || response.startsWith("Error");
     }
 }

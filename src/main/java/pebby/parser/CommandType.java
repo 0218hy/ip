@@ -11,6 +11,7 @@ public enum CommandType {
     FIND("find"),
     SCHEDULE("schedule"),
     DELETE("delete"),
+    HELP("help"),
     BYE("bye"),
     UNKNOWN("");
 

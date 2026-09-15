@@ -24,6 +24,12 @@ public class Pebby {
     private static TaskList tasks = new TaskList();
     private static final Storage storage = new Storage();
 
+    /**
+     * Creates Pebby and loads any tasks saved from an earlier session.
+     */
+    public Pebby() {
+        loadTasks();
+    }
 
     /**
      * Generates a response for the user's chat message.
@@ -32,7 +38,16 @@ public class Pebby {
      * @return Pebby's response
      */
     public String getResponse(String input) {
-        return "Pebby heard: " + input;
+        StringBuilder response = new StringBuilder();
+        Ui ui = new Ui(response);
+        ParsedCommand parsedCommand = Parser.parse(input);
+
+        if (parsedCommand.getType() == CommandType.BYE) {
+            return "Bye Bye!";
+        }
+
+        executeCommand(parsedCommand, ui);
+        return response.toString().trim();
     }
 
     /**
@@ -71,6 +86,30 @@ public class Pebby {
             matches.append(index + 1).append(". ").append(matchingTasks.get(index)).append('\n');
         }
         return matches.toString();
+    }
+
+    /**
+     * Returns a grouped reference for every command Pebby understands.
+     *
+     * @return the formatted command reference
+     */
+    private static String helpText() {
+        return "Here is what I can do:\n\n"
+                + "ADD TASKS\n"
+                + "• todo <task description>\n"
+                + "• deadline <task description> /by <yyyy-MM-dd>\n"
+                + "• event <task description> /from <yyyy-MM-dd> /to <yyyy-MM-dd>\n\n"
+                + "MANAGE TASKS\n"
+                + "• list\n"
+                + "• mark <task number>\n"
+                + "• unmark <task number>\n"
+                + "• delete <task number>\n\n"
+                + "FIND AND PLAN\n"
+                + "• find <keyword>\n"
+                + "• schedule <yyyy-MM-dd>\n\n"
+                + "OTHER\n"
+                + "• help\n"
+                + "• bye";
     }
 
     /**
@@ -123,6 +162,59 @@ public class Pebby {
     }
 
     /**
+     * Executes one parsed command and sends its response to the supplied user interface.
+     *
+     * @param parsedCommand command to execute
+     * @param ui user interface that receives the response
+     */
+    private static void executeCommand(ParsedCommand parsedCommand, Ui ui) {
+        CommandType commandType = parsedCommand.getType();
+        String argument = parsedCommand.getArgument();
+
+        switch (commandType) {
+            case LIST:
+                new ListCommand().execute(tasks, ui, storage);
+                break;
+            case MARK:
+                try {
+                    ui.showLine(markTask(taskIndexFrom(argument)));
+                } catch (IllegalArgumentException exception) {
+                    ui.showLine("Invalid mark: " + exception.getMessage());
+                }
+                break;
+            case UNMARK:
+                try {
+                    ui.showLine(unmarkTask(taskIndexFrom(argument)));
+                } catch (IllegalArgumentException exception) {
+                    ui.showLine("Invalid unmark: " + exception.getMessage());
+                }
+                break;
+            case TODO:
+            case DEADLINE:
+            case EVENT:
+                new AddCommand(commandType, argument).execute(tasks, ui, storage);
+                break;
+            case FIND:
+                ui.show(handleFind(argument));
+                break;
+            case SCHEDULE:
+                new ScheduleCommand(argument).execute(tasks, ui, storage);
+                break;
+            case DELETE:
+                new DeleteCommand(argument).execute(tasks, ui, storage);
+                break;
+            case HELP:
+                ui.showLine(helpText());
+                break;
+            case BYE:
+            case UNKNOWN:
+            default:
+                ui.showLine("Hmmm... What does this mean? My pebble brain cant understand.");
+                break;
+        }
+    }
+
+    /**
      * Starts Pebby and processes commands until the user exits.
      *
      * @param args Command-line arguments, which Pebby does not use.
@@ -140,9 +232,7 @@ public class Pebby {
         while (ui.hasNextCommand() && !isExit) {
             String command = ui.readCommand();
             ParsedCommand parsedCommand = Parser.parse(command);
-            CommandType commandType = parsedCommand.getType();
-            String argument = parsedCommand.getArgument();
-            if (commandType == CommandType.BYE) {
+            if (parsedCommand.getType() == CommandType.BYE) {
                 Command exitCommand = new ExitCommand();
                 exitCommand.execute(tasks, ui, storage);
                 isExit = exitCommand.isExit();
@@ -150,54 +240,7 @@ public class Pebby {
             }
 
             ui.showSeparator();
-            switch (commandType) {
-                case LIST:
-                    new ListCommand().execute(tasks, ui, storage);
-                    break;
-                case MARK: {
-                    try {
-                        ui.showLine(markTask(taskIndexFrom(argument)));
-                    } catch (IllegalArgumentException exception) {
-                        ui.showLine("Invalid mark: " + exception.getMessage());
-                    }
-                    break;
-                }
-                case UNMARK: {
-                    try {
-                        ui.showLine(unmarkTask(taskIndexFrom(argument)));
-                    } catch (IllegalArgumentException exception) {
-                        ui.showLine("Invalid unmark: " + exception.getMessage());
-                    }
-                    break;
-                }
-                case TODO: {
-                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
-                    break;
-                }
-                case DEADLINE: {
-                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
-                    break;
-                }
-                case EVENT: {
-                    new AddCommand(commandType, argument).execute(tasks, ui, storage);
-                    break;
-                }
-                case FIND: {
-                    ui.show(handleFind(argument));
-                    break;
-                }
-                case SCHEDULE: {
-                    new ScheduleCommand(argument).execute(tasks, ui, storage);
-                    break;
-                }
-                case DELETE: {
-                    new DeleteCommand(argument).execute(tasks, ui, storage);
-                    break;
-                }
-                case BYE:
-                default:
-                    ui.showLine("Hmmm... What does this mean? My pebble brain cant understand.");
-            }
+            executeCommand(parsedCommand, ui);
             ui.showSeparator();
         }
         ui.showGoodbye();

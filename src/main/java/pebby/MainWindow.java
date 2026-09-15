@@ -33,6 +33,7 @@ public class MainWindow extends AnchorPane {
     /** Injects the Pebby instance */
     public void setPebby(Pebby p) {
         pebby = p;
+        dialogContainer.getChildren().add(DialogBox.getPebbyDialog(commandGuide(), pebbyImage));
     }
 
     /**
@@ -45,8 +46,53 @@ public class MainWindow extends AnchorPane {
         String response = pebby.getResponse(input);
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getPebbyDialog(response, pebbyImage)
+                DialogBox.getPebbyDialog(addFormatGuidance(response), pebbyImage)
         );
         userInput.clear();
+    }
+
+    /**
+     * Adds a command example to error messages displayed in the graphical interface.
+     *
+     * @param response Pebby's original response
+     * @return the response with a relevant command format when it is an error
+     */
+    static String addFormatGuidance(String response) {
+        if (response.startsWith("Invalid todo")) {
+            return response + "\n\nCorrect format: todo <task description>";
+        }
+        if (response.startsWith("Invalid deadline")) {
+            return response + "\n\nCorrect format: deadline <task description> /by <yyyy-MM-dd>";
+        }
+        if (response.startsWith("Invalid event")) {
+            return response + "\n\nCorrect format: event <task description> /from <yyyy-MM-dd> "
+                    + "/to <yyyy-MM-dd>";
+        }
+        if (response.startsWith("Invalid mark")) {
+            return response + "\n\nCorrect format: mark <task number>";
+        }
+        if (response.startsWith("Invalid unmark")) {
+            return response + "\n\nCorrect format: unmark <task number>";
+        }
+        if (response.startsWith("Invalid delete")) {
+            return response + "\n\nCorrect format: delete <task number>";
+        }
+        if (response.startsWith("Invalid find")) {
+            return response + "\n\nCorrect format: find <keyword>";
+        }
+        if (response.startsWith("Invalid schedule")) {
+            return response + "\n\nCorrect format: schedule <yyyy-MM-dd>";
+        }
+        if (response.startsWith("Hmmm")) {
+            return response + "\n\nType help to see the available commands.";
+        }
+        return response;
+    }
+
+    /**
+     * Returns the command reference shown when the graphical interface opens.
+     */
+    private String commandGuide() {
+        return "Hello! I'm Pebby. Type help to see what I can do.";
     }
 }

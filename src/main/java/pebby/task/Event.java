@@ -1,7 +1,6 @@
 package pebby.task;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 /** Represents a task that takes place between a supplied start and end time. */
 public class Event extends Task {
@@ -11,8 +10,8 @@ public class Event extends Task {
     /** Creates an event using the supplied description, start date, and end date. */
     public Event(String description, String from, String to) {
         super(description);
-        this.from = LocalDate.parse(from, DateTimeFormatter.ofPattern("MMM dd yyyy"));
-        this.to = LocalDate.parse(to, DateTimeFormatter.ofPattern("MMM dd yyyy"));
+        this.from = Deadline.parseDate(from);
+        this.to = Deadline.parseDate(to);
     }
 
     /** Returns the event's start time text. */
